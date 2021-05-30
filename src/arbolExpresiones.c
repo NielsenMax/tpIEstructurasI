@@ -60,10 +60,10 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
 void Imprimir(ETree tree) {
   if (tree != NULL) {
     if (tree->Izq)
-    {      
+    {
       printf("(");
     }
-    
+
     Imprimir(tree->Izq);
     if (tree->tipo == 1) {
       printf("%s", tree->simbolo);
@@ -72,11 +72,11 @@ void Imprimir(ETree tree) {
     }
     Imprimir(tree->Der);
     if (!tree->Der)
-    {  
+    {
      printf(")");
     }
   }
-
+}
 
 void imprimir_stack(Stack stack) {
   for (; stack; stack = stack->sig) {
@@ -157,7 +157,23 @@ void liberar_expresion(ETree expresion) {
   }
 }
 
-
+int evaluar_expresion(ETree expresion) {
+    int retorno = 0, temp[2];
+    if(expresion){
+    if (expresion->tipo) {
+        if (expresion->operador.aridad == 1) {
+            temp[0] = evaluar_expresion(expresion->Der);
+        } else {
+            temp[0] = evaluar_expresion(expresion->Izq);
+            temp[1] = evaluar_expresion(expresion->Der);
+        }
+        retorno = expresion->operador.eval(temp);
+    } else {
+        retorno = expresion->valor;
+    }
+    }
+    return retorno;
+}
 
 int main() {
   TablaOps tabla = NULL;
@@ -173,6 +189,7 @@ int main() {
   cargar_expresion(&t, tabla, "5 -- 13 + 2 * 7 +");
   if (t) {
     Imprimir(t);
+    printf("%i", evaluar_expresion(t));
   }
   liberar_tabla(tabla);
   liberar_expresion(t);
