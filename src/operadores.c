@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 int suma(int *args) {
   return args[0] + args[1];
@@ -30,8 +31,8 @@ int potencia(int *args) {
 void cargar_operador(TablaOps *tabla, char *simbolo, int aridad, FuncionEvaluacion eval) {
     TablaOps nuevoNodo = malloc(sizeof(ONodo));
     nuevoNodo->simbolo = simbolo;
-    nuevoNodo->aridad = aridad;
-    nuevoNodo->eval = eval;
+    nuevoNodo->casilla.aridad = aridad;
+    nuevoNodo->casilla.eval = eval;
     nuevoNodo->sig = *tabla;
     *tabla = nuevoNodo;
 }
@@ -44,12 +45,21 @@ void liberar_tabla(TablaOps tabla) {
     }
 }
 
-
+OCasilla buscar_simbolo(TablaOps tabla, char *simbolo) {
+    OCasilla retorno;
+    retorno.aridad = -1;
+    for (; tabla && retorno.aridad == -1; tabla = tabla->sig) {
+        if (!strcmp(simbolo, tabla->simbolo))
+            retorno = tabla->casilla;
+    }
+    return retorno;
+}
 
 int main() {
     TablaOps tabla = NULL;
     cargar_operador(&tabla, "+", 2, suma);
-    printf("%i", tabla->eval((int[2]) {3 ,4}));
+    printf("%i", tabla->casilla.eval((int[2]) {3 ,4}));
+    printf("%i", buscar_simbolo(tabla, "+").eval((int[2]) {3 ,4}));
     liberar_tabla(tabla);
     return 0;
 }

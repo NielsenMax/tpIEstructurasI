@@ -3,16 +3,22 @@
 
 typedef int (*FuncionEvaluacion)(int *args);
 
-typedef struct _ONodo {
-    char *simbolo;
+typedef struct _OCasilla {
     int aridad;
     FuncionEvaluacion eval;
+} OCasilla;
+
+typedef struct _ONodo {
+    char *simbolo;
+    OCasilla casilla;
     struct _ONodo *sig;
 } ONodo;
 
 typedef ONodo *TablaOps;
 
 void cargar_operador(TablaOps *tabla, char *simbolo, int aridad, FuncionEvaluacion eval);
+
+OCasilla buscar_simbolo(TablaOps tabla, char *simbolo);
 
 int suma(int *args);
 int resta(int *args);
