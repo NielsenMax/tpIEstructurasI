@@ -1,0 +1,10 @@
+#ifndef __LISTA_OPERADORES_H__
+#define __LISTA_OPERADORES_H__
+
+typedef struct _ONodo {
+    char *simbolo;
+    int aridad;
+    
+} ONodo;
+
+#endif /** __LISTA_OPERADORES_H__ **/

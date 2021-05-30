@@ -3,6 +3,17 @@
 
 typedef int (*FuncionEvaluacion)(int *args);
 
+typedef struct _ONodo {
+    char *simbolo;
+    int aridad;
+    FuncionEvaluacion eval;
+    struct _ONodo *sig;
+} ONodo;
+
+typedef ONodo *TablaOps;
+
+void cargar_operador(TablaOps *tabla, char *simbolo, int aridad, FuncionEvaluacion eval);
+
 int suma(int *args);
 int resta(int *args);
 int opuesto(int *args);

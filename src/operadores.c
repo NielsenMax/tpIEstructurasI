@@ -26,3 +26,30 @@ int modulo(int *args) {
 int potencia(int *args) {
     return pow(args[0], args[1]);
 }
+
+void cargar_operador(TablaOps *tabla, char *simbolo, int aridad, FuncionEvaluacion eval) {
+    TablaOps nuevoNodo = malloc(sizeof(ONodo));
+    nuevoNodo->simbolo = simbolo;
+    nuevoNodo->aridad = aridad;
+    nuevoNodo->eval = eval;
+    nuevoNodo->sig = *tabla;
+    *tabla = nuevoNodo;
+}
+
+void liberar_tabla(TablaOps tabla) {
+    while (tabla) {
+        TablaOps siguiente = tabla->sig;
+        free(tabla);
+        tabla = siguiente;
+    }
+}
+
+
+
+int main() {
+    TablaOps tabla = NULL;
+    cargar_operador(&tabla, "+", 2, suma);
+    printf("%i", tabla->eval((int[2]) {3 ,4}));
+    liberar_tabla(tabla);
+    return 0;
+}
