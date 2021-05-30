@@ -28,7 +28,7 @@ void pop(Stack *stack) {
         free(*stack);
         *stack = siguiente;
     }
-    //return retorno;
+    //return retorno
 }
 
 void liberar_stack(Stack stack) {
