@@ -117,9 +117,9 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
             t->Izq = top(stack);
             pop(&stack);
           } else {
-            t->Izq = top(stack);
+            t->Der = top(stack);
             pop(&stack);
-            t->Der = NULL;
+            t->Izq = NULL;
           }
 
           // printf("\n%s", t->Izq->simbolo);
@@ -153,8 +153,6 @@ void liberar_expresion(ETree expresion) {
 
 
 
-
-
 int main() {
   TablaOps tabla = NULL;
   cargar_operador(&tabla, "+", 2, suma);
@@ -171,4 +169,5 @@ int main() {
     Imprimir(t);
   }
   liberar_tabla(tabla);
+  liberar_expresion(t);
 }
