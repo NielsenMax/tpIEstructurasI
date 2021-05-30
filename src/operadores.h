@@ -1,5 +1,7 @@
 #ifndef __OPERADORES_H__
 #define __OPERADORES_H__
+#include <stdlib.h>
+#include <stdio.h>
 
 typedef int (*FuncionEvaluacion)(int *args);
 
@@ -20,9 +22,12 @@ void cargar_operador(TablaOps *tabla, char *simbolo, int aridad, FuncionEvaluaci
 
 OCasilla buscar_simbolo(TablaOps tabla, char *simbolo);
 
+void liberar_tabla(TablaOps tabla);
+
 int suma(int *args);
 int resta(int *args);
 int opuesto(int *args);
+int producto(int *args);
 int division(int *args);
 int modulo(int *args);
 int potencia(int *args);
