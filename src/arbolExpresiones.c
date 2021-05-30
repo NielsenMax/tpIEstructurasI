@@ -59,7 +59,11 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
 
 void Imprimir(ETree tree) {
   if (tree != NULL) {
-    printf("(");
+    if (tree->Izq)
+    {      
+      printf("(");
+    }
+    
     Imprimir(tree->Izq);
     if (tree->tipo == 1) {
       printf("%s", tree->simbolo);
@@ -67,10 +71,12 @@ void Imprimir(ETree tree) {
       printf("%i", tree->valor);
     }
     Imprimir(tree->Der);
-    printf(")");
+    if (!tree->Der)
+    {  
+     printf(")");
+    }
   }
 
-}
 
 void imprimir_stack(Stack stack) {
   for (; stack; stack = stack->sig) {
