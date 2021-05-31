@@ -5,7 +5,7 @@
 #include <string.h>
 
 ATree insertar_alias(ETree operacion,ATree raiz,char *pal){
-    
+
     if(raiz==NULL){
         ATree nuevoNodo = malloc(sizeof(ANodo));
         nuevoNodo->alias = malloc(sizeof(char) * strlen(pal)+1);
@@ -24,8 +24,8 @@ ATree insertar_alias(ETree operacion,ATree raiz,char *pal){
     }
     return raiz;
 
-    
-  
+
+
 }
 
 
@@ -43,18 +43,18 @@ void Imprimir_alias(ATree aliases,char *pal){
         {
             Imprimir_alias(aliases->Der,pal);
         }
-        
-        
-        
+
+
+
 
     }
 }
 void liberar_alias(ATree tree) {
     if(tree!=NULL){
-       
+
         liberar_alias(tree->Izq);
         liberar_alias(tree->Der);
-        free(tree->alias);        
+        free(tree->alias);
         free(tree);}
 
 }
@@ -69,7 +69,7 @@ int main(){
   cargar_operador(&tabla, "^", 2, potencia);
   ETree t = NULL;
   liberar_expresion(t);
-  cargar_expresion(&t, tabla, "5 -- 13 + 2 * 7 +");
+  cargar_expresion(&t, tabla, "5-- 13+ 2* 7+");
   ATree T=NULL;
   if (t) {
     Imprimir(t);
@@ -79,8 +79,8 @@ int main(){
     printf("%i", evaluar_expresion(t));
   }
   liberar_tabla(tabla);
-  liberar_expresion(t);  
+  liberar_expresion(t);
   liberar_alias(T);
-  
+
 
 }
