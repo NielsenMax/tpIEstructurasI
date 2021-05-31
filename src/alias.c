@@ -69,7 +69,7 @@ int main(){
   cargar_operador(&tabla, "^", 2, potencia);
   ETree t = NULL;
   liberar_expresion(t);
-  cargar_expresion(&t, tabla, "5-- 13+ 2* 7+");
+  cargar_expresion(&t, tabla, "5 1 + -- 13+ 2* 7+");
   ATree T=NULL;
   if (t) {
     Imprimir(t);

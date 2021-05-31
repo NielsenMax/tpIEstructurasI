@@ -83,6 +83,7 @@ void imprimir_stack(Stack stack) {
   for (; stack; stack = stack->sig) {
 
     Imprimir(stack->dato);
+    printf("|");
   }
 }
 
@@ -93,16 +94,23 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
   ETree t;
   OCasilla ct, casilla;
   for (int i = 0; expresion[i] && !operadorNoExistente; i++) {
-      if (isdigit(expresion[i]))
+          if (isdigit(expresion[i])) {
         valor = valor * 10 + (expresion[i] - '0');
+        largoOp = 0;
+          }
       else {
+          if(!largoOp){
       casilla.aridad = -1;
       casilla.eval = NULL;
       t = nuevo_ENodo(NULL, ct, valor);
       push(&stack, t);
+
       valor = 0;
+          }
       for (;expresion[i] == ' '; i++) {}
-        operador[0] = '\0';
+      if (isdigit(expresion[i]))
+          i--;
+      else {
         for (largoOp = 0; expresion[i] != ' ' && expresion[i]; i++) {
           operador[largoOp] = expresion[i];
           largoOp++;
@@ -113,22 +121,27 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
         casilla = buscar_simbolo(tablaOps, operador);
         if (casilla.aridad != -1) {
           t = nuevo_ENodo(operador, casilla, 0);
-          if (casilla.aridad == 2) {
+           if (casilla.aridad == 2) {
             t->Der = top(stack);
             pop(&stack);
+
             t->Izq = top(stack);
             pop(&stack);
+
           } else {
             t->Der = top(stack);
             pop(&stack);
+
             t->Izq = NULL;
           }
           // printf("\n%s", t->Izq->simbolo);
           push(&stack, t);
+
           //printf("|%s|", stack->dato->simbolo);
         } else {
           operadorNoExistente = 1;
         }
+      }
       }
     }
   //imprimir_stack(stack);
