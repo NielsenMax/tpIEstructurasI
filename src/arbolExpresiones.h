@@ -2,6 +2,7 @@
 #define __ARBOL_EXPRESION_H__
 #include "operadores.h"
 
+
 typedef struct _ENodo {
     int tipo;
     char *simbolo;
@@ -29,5 +30,8 @@ void liberar_stack(Stack stack);
 void cargar_expresion(ETree *arbol, TablaOps tablaOps, char *expresion);
 
 void liberar_expresion(ETree arbol);
+
+int evaluar_expresion(ETree expresion);
+void Imprimir(ETree tree);
 
 #endif // __ARBOL_EXPRESION_H__

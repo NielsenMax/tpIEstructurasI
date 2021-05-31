@@ -1,5 +1,6 @@
 #include "arbolExpresiones.h"
 #include "operadores.h"
+
 //#include <stdlib.h>
 //#include <stdio.h>
 #include <ctype.h>
@@ -20,15 +21,15 @@ ETree top(Stack stack) {
 }
 
 void pop(Stack * stack) {
-  ETree retorno = NULL;
+  
   if (*stack) {
     Stack siguiente = (*stack)->sig;
-    retorno = (*stack)->dato;
+   
     //liberar_expresion((*stack)->dato);
     free(*stack);
     *stack = siguiente;
   }
-  //return retorno
+
 }
 
 void liberar_stack(Stack stack) {
@@ -47,7 +48,7 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
     nuevoNodo->simbolo = NULL;
   } else {
     nuevoNodo->tipo = 1;
-    nuevoNodo->simbolo = malloc(sizeof(char) * strlen(simbolo));
+    nuevoNodo->simbolo = malloc(sizeof(char) * strlen(simbolo)+1);
     strcpy(nuevoNodo->simbolo, simbolo);
   }
   nuevoNodo->operador = operador;
@@ -175,22 +176,4 @@ int evaluar_expresion(ETree expresion) {
     return retorno;
 }
 
-int main() {
-  TablaOps tabla = NULL;
-  cargar_operador(&tabla, "+", 2, suma);
-  cargar_operador(&tabla, "-", 2, resta);
-  cargar_operador(&tabla, "--", 1, opuesto);
-  cargar_operador(&tabla, "*", 2, producto);
-  cargar_operador(&tabla, "/", 2, division);
-  cargar_operador(&tabla, "%", 2, modulo);
-  cargar_operador(&tabla, "^", 2, potencia);
-  ETree t = NULL;
-  liberar_expresion(t);
-  cargar_expresion(&t, tabla, "5 -- 13 + 2 * 7 +");
-  if (t) {
-    Imprimir(t);
-    printf("%i", evaluar_expresion(t));
-  }
-  liberar_tabla(tabla);
-  liberar_expresion(t);
-}
+
