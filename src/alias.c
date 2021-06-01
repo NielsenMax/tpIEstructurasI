@@ -55,11 +55,30 @@ ETree Buscar_alias(ATree aliases,char *pal){
 }
 
 void Imprimir_alias(ATree aliases,char *pal){
-    Imprimir(Buscar_alias(aliases,pal));
+    ETree t=NULL;
+    t=Buscar_alias(aliases,pal);
+    if (t){
+        Imprimir(t);
+    }
+    else
+    {
+        printf("El alias no esta cargado, no se puede imprimir");
+    }
+    
+    
 }
 
 void Evaluar_alias(ATree aliases,char *pal){
-    printf("\nEVALUAR: %i\n",evaluar_expresion(Buscar_alias(aliases,pal)));
+    ETree t=NULL;
+    t=Buscar_alias(aliases,pal);
+    if (t){
+         printf("\nEVALUAR: %i\n",evaluar_expresion(t));
+    }
+    else
+    {
+        printf("El alias no esta cargado, no se puede evaluar");
+    }
+   
 }
 void liberar_alias(ATree tree) {
     if(tree!=NULL){

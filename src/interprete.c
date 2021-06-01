@@ -34,11 +34,17 @@ char *leer()
 
     return line;
 }
+void minusculas(char *palabra){
+    for(;*palabra;++palabra)
+        *palabra=tolower(*palabra);
+    
+
+}
 
 
 
 int opciones(char *input,int *fin){
-    int i,t=0;
+    int i,t=0,igual=0;
     char temp[strlen(input)];
     temp[0]='\0';
     for(i=0;input[i];i++){
@@ -54,31 +60,25 @@ int opciones(char *input,int *fin){
                 *fin=i;
                 return 2;
             }
-            else{
+            else if(igual && !strcmp(temp,"cargar")){
+                *fin=i;
                 return 0;
             }
         }
-        if(input[i]!=' '){
+        if(input[i]!=' ' && input[i]!='='){
             temp[t]=input[i];
             t++;
             temp[t]='\0';
         }
+        else if (input[i]=='='){
+            temp[0]='\0';
+            t=0;
+            igual=1;
+        }
 
     }
     
-    if(!strcmp(temp,"imprimir")){
-               
-               *fin=i;
-               return 1; 
-            }
-            else if(!strcmp(temp,"evaluar")){
-                *fin=i;
-                return 2;
-            }
-            else{
-                
-                return 0;
-            }
+    return 3;
 }
 
 void interpretar_IoE(char *input,int fin,ATree T,int ioe)
@@ -113,42 +113,69 @@ void interpretar_IoE(char *input,int fin,ATree T,int ioe)
 }
 
 
-void interpretar_alias(char *input,ATree T,TablaOps tabla){
+void interpretar_alias(char *input,ATree T,TablaOps tabla,int fin){
     
-    int i,ta=0,te=0,espacio=0,igual=0;
+    int i,ta=0,te=0,espacio=0,valid=1,flag=0;
     int len=strlen(input);
     char tempa[len],tempe[len];
+
+
     if(input[0]!=' ')
         espacio=1;
-    for(i=0;input[i];i++)
+    tempa[0]='\0';
+    for(i=0;input[i]!='=' && !isdigit(tempa[0]);i++)
     {
-        if(input[i+1]!=' '){
+        if(input[i]!=' '){
                 espacio=1;
         }
-        if(input[i+1]=='=')
-        {
-                igual=1;
-        }
-        if(espacio && !igual && input[i]!='=')
+        if(espacio )
         {
             tempa[ta]=input[i];
             ta++;
-        }
-        else if(espacio && igual && input [i]!= '=')
-        {   
+        }      
+        
+        
+    }
+    if(isdigit(tempa[0])){
+        valid=0;
+    }
+    if(tempa[ta-1]==' '){
+        tempa[ta-1]='\0';
+    }
+    else
+    {
+        tempa[ta]='\0';
+    }
+
+    for(i=fin;input[i] && valid;i++){
+        if(!isalpha(input[i]) )
+        {
+            if(isdigit(input[i])){
+                flag=1;
+            }
             tempe[te]=input[i];
             te++;
         }
-    
+        else
+        {
+            valid=0;
+        }
+
         
     }
-    tempa[ta]='\0';
+    
     tempe[te]='\0';
-    printf("%s,%s",tempa,tempe);
-    ETree t=NULL;
-    liberar_expresion(t);
-    cargar_expresion(&t,tabla,tempe);
-    T=insertar_alias(t,T,tempa);
+    if(valid && flag){
+        printf("%s,%s",tempa,tempe);
+        ETree t=NULL;
+        liberar_expresion(t);
+         cargar_expresion(&t,tabla,tempe);
+         T=insertar_alias(t,T,tempa);
+    }
+    else
+    {
+        printf("la expresion o el alias que se quiere cargar es invalida");
+    }
     
     
 
@@ -156,9 +183,9 @@ void interpretar_alias(char *input,ATree T,TablaOps tabla){
 }
 
 void interpretar(ATree T,TablaOps tabla){
-  printf("ingrese linea\n:");
+  printf("ingrese un comando: \n:");
   char *input=leer();
-  
+  minusculas(input);
   while (strcmp(input,"salir"))
   {
       printf("\n");
@@ -171,13 +198,18 @@ void interpretar(ATree T,TablaOps tabla){
               interpretar_IoE(input,a,T,menu);
               
           }
-          else{
+          else if(menu==2){
            interpretar_IoE(input,a,T,menu);
           }
+          else
+          {
+              printf("el ingreso es invalido");
+          }
+          
       }
       else
       {
-         interpretar_alias(input,T,tabla);
+         interpretar_alias(input,T,tabla,a);
       }
       free (input);      
       input=leer();
@@ -185,7 +217,26 @@ void interpretar(ATree T,TablaOps tabla){
   }
   free(input);
 }
+void presentacion(){
+    char c='a';
+    
+    while(c!='\n'){
+        system("clear");
+        printf("\nModo de uso del programa:\n");
+        printf("\nEl programa contiene tres funciones que son las siguientes:\n");
+        printf("ALIAS = EXPR : asocia una expresion aritmetica escrita de manera postfija a el alias deseado.\n");
+        printf("Immprimir ALIAS : Imprime la expresion aritmetica asociada a dicho alias.\n");
+        printf("Evaluar ALIAS : Imprime en pantalla el resultado de calcular la expresion aritmetica asociada al alias\n");
+        printf("Para salir del programa debe escribir 'salir'\n ");
+        printf("\nNOTAS:\n-- No se distinguen mayusculas de minusculas\n--Los espacios antes del primer caracter son ignorados.\n--Se considera ALIAS a todo lo escrito antes del igual"); 
+        printf(" pero se puede separar el alias de el '=' con un solo espacio y este va a ser ignorado. Para hacer mas clara la input\n");
+        printf("--Los alias pueden ser varias palabras o contener espacios al final pero el espacio inmediatamente anterior al igual es ignorado\n");
+        printf("\nPRESIONE ENTER PARA CONTINUAR\n");
+        c=getchar();
+    }
+    system("clear");
 
+}           
 int main(){
   TablaOps tabla = NULL;
   cargar_operador(&tabla, "+", 2, suma);
@@ -209,7 +260,8 @@ int main(){
   printf("\n");
   Imprimir_alias(T,"ahola");
   printf("\n");
-  Imprimir_alias(T,"hola");
+  //Imprimir_alias(T,"hola");
+  presentacion();
   interpretar(T,tabla);
   
   liberar_tabla(tabla);
