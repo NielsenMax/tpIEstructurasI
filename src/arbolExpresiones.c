@@ -59,24 +59,31 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
 }
 
 void Imprimir(ETree tree) {
+  
   if (tree != NULL) {
-    if (tree->Izq)
+    if (tree->Izq && tree->Der)
     {
       printf("(");
+      
     }
 
     Imprimir(tree->Izq);
     if (tree->tipo == 1) {
       printf("%s", tree->simbolo);
+      
     } else {
       printf("%i", tree->valor);
+      
     }
     Imprimir(tree->Der);
-    if (!tree->Der)
+    if (!tree->Der && !tree->Izq )
     {
-     printf(")");
+     
+      printf(")");
+     
     }
   }
+
 }
 
 void imprimir_stack(Stack stack) {
@@ -108,7 +115,7 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
       valor = 0;
           }
       for (;expresion[i] == ' '; i++) {}
-      if (isdigit(expresion[i]))
+      if (isdigit(expresion[i])||!expresion[i])
           i--;
       else {
         for (largoOp = 0; expresion[i] != ' ' && expresion[i]; i++) {
@@ -152,7 +159,10 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
     t = top(stack);
     pop(&stack);
   }
+
+  
   *arbol = t;
+  liberar_stack(stack);
 }
 
 void liberar_expresion(ETree expresion) {

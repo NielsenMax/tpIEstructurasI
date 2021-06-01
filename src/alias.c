@@ -28,59 +28,49 @@ ATree insertar_alias(ETree operacion,ATree raiz,char *pal){
 
 }
 
+ETree Buscar_alias(ATree aliases,char *pal){
+    int no=1;
+    if(aliases==NULL){
+        return NULL;
+    }
+    else if (strcmp(aliases->alias,pal)==0)
+        {
+            return(aliases->arbol);
+            no=0;
+        }
+    else if (strcmp(aliases->alias,pal)>0)
+        {            
+            return Buscar_alias(aliases->Izq,pal);
+            no=0;
+        }
+    else
+        {           
+            return Buscar_alias(aliases->Der,pal);
+            no=0;
+        }    
+
+    if(no){
+        printf("\n no se encontro el alias\n");        
+    }
+}
 
 void Imprimir_alias(ATree aliases,char *pal){
-    if(aliases!=NULL){
-        if (strcmp(aliases->alias,pal)==0)
-        {
-            Imprimir(aliases->arbol);
-        }
-        else if (strcmp(aliases->alias,pal)>0)
-        {
-            Imprimir_alias(aliases->Izq,pal);
-        }
-        else
-        {
-            Imprimir_alias(aliases->Der,pal);
-        }
+    Imprimir(Buscar_alias(aliases,pal));
+}
 
-
-
-
-    }
+void Evaluar_alias(ATree aliases,char *pal){
+    printf("\nEVALUAR: %i\n",evaluar_expresion(Buscar_alias(aliases,pal)));
 }
 void liberar_alias(ATree tree) {
     if(tree!=NULL){
 
         liberar_alias(tree->Izq);
         liberar_alias(tree->Der);
+        liberar_expresion(tree->arbol);
         free(tree->alias);
         free(tree);}
 
 }
-int main(){
-  TablaOps tabla = NULL;
-  cargar_operador(&tabla, "+", 2, suma);
-  cargar_operador(&tabla, "-", 2, resta);
-  cargar_operador(&tabla, "--", 1, opuesto);
-  cargar_operador(&tabla, "*", 2, producto);
-  cargar_operador(&tabla, "/", 2, division);
-  cargar_operador(&tabla, "%", 2, modulo);
-  cargar_operador(&tabla, "^", 2, potencia);
-  ETree t = NULL;
-  liberar_expresion(t);
-  cargar_expresion(&t, tabla, "5 1 + -- 13+ 2*       7+");
-  ATree T=NULL;
-  if (t) {
-    Imprimir(t);
-    T=insertar_alias(t,T,"hola");
-    T=insertar_alias(t,T,"ahola");
-    Imprimir_alias(T,"ahola");
-    printf("%i", evaluar_expresion(t));
-  }
-  liberar_tabla(tabla);
-  liberar_expresion(t);
-  liberar_alias(T);
 
 
-}
+
