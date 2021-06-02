@@ -158,6 +158,7 @@ void interpretar_alias(char *input,ATree T,TablaOps tabla,int fin){
         }
         else
         {
+            
             valid=0;
         }
 
@@ -231,6 +232,8 @@ void presentacion(){
         printf("\nNOTAS:\n-- No se distinguen mayusculas de minusculas\n--Los espacios antes del primer caracter son ignorados.\n--Se considera ALIAS a todo lo escrito antes del igual"); 
         printf(" pero se puede separar el alias de el '=' con un solo espacio y este va a ser ignorado. Para hacer mas clara la input\n");
         printf("--Los alias pueden ser varias palabras o contener espacios al final pero el espacio inmediatamente anterior al igual es ignorado\n");
+        printf("--Todo lo escrito despues de la palabra clave 'cargar' es considerado expresion aritmetica\n");
+        
         printf("\nPRESIONE ENTER PARA CONTINUAR\n");
         c=getchar();
     }
@@ -255,14 +258,14 @@ int main(){
     printf("%i",evaluar_expresion(t));
   }
   T=insertar_alias(t,T,"ahola");
-  T=insertar_alias(NULL,T,"hola");
-  T=insertar_alias(NULL,T,"caca de vaca");
+ 
   printf("\n");
   Imprimir_alias(T,"ahola");
   printf("\n");
   //Imprimir_alias(T,"hola");
   presentacion();
   interpretar(T,tabla);
+
   
   liberar_tabla(tabla);
   

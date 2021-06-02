@@ -11,6 +11,7 @@ void push(Stack * stack, ETree dato) {
   nuevoNodo->dato = dato;
   nuevoNodo->sig = *stack;
   *stack = nuevoNodo;
+  printf("PUSH");
 }
 
 ETree top(Stack stack) {
@@ -28,16 +29,25 @@ void pop(Stack * stack) {
     //liberar_expresion((*stack)->dato);
     free(*stack);
     *stack = siguiente;
+    printf("POP");
   }
 
 }
-
+void liberar_expresion(ETree expresion) {
+  if (expresion) {
+    liberar_expresion(expresion->Izq);
+    liberar_expresion(expresion->Der);
+    if(expresion->simbolo){free(expresion->simbolo);}
+    free(expresion);
+  }
+}
 void liberar_stack(Stack stack) {
-  while (stack) {
+  while (stack!=NULL) {
     Stack siguiente = stack->sig;
     liberar_expresion(stack->dato);
     free(stack);
-    stack = siguiente;
+    stack = siguiente;*
+    
   }
 }
 
@@ -96,11 +106,12 @@ void imprimir_stack(Stack stack) {
 
 void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
   Stack stack = NULL;
-  int valor = 0, largoOp = 0, operadorNoExistente = 0;
+  int valor = 0, largoOp = 0, operadorNoExistente = 0,i=0;
   char operador[100];
   ETree t;
   OCasilla ct, casilla;
-  for (int i = 0; expresion[i] && !operadorNoExistente; i++) {
+  for (i=0;expresion[i] == ' '; i++) {}
+  for (; expresion[i] && !operadorNoExistente; i++) {
           if (isdigit(expresion[i])) {
         valor = valor * 10 + (expresion[i] - '0');
         largoOp = 0;
@@ -159,20 +170,27 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
     t = top(stack);
     pop(&stack);
   }
+  if (stack)
+  {
+    t = NULL;
+    liberar_stack(stack);
+    printf("STACK: ");
+    imprimir_stack(stack); 
+    
+    
+  }
+  
+  
+
+
+  
 
   
   *arbol = t;
   liberar_stack(stack);
 }
 
-void liberar_expresion(ETree expresion) {
-  if (expresion) {
-    liberar_expresion(expresion->Izq);
-    liberar_expresion(expresion->Der);
-    free(expresion->simbolo);
-    free(expresion);
-  }
-}
+
 
 int evaluar_expresion(ETree expresion) {
     int retorno = 0, temp[2];
