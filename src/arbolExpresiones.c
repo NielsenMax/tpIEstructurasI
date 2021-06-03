@@ -15,6 +15,7 @@ void push(Stack * stack, ETree dato) {
 }
 
 ETree top(Stack stack) {
+
   if (stack) {
     return stack->dato;
   }
@@ -22,33 +23,36 @@ ETree top(Stack stack) {
 }
 
 void pop(Stack * stack) {
-
   if (*stack) {
     Stack siguiente = (*stack)->sig;
-printf("POP\n");
-//liberar_expresion((*stack)->dato);
+    printf("POP\n");
+    //     liberar_expresion((*stack)->dato);
     free(*stack);
     *stack = siguiente;
-
-  }
-
+}
 }
 void liberar_expresion(ETree expresion) {
-  if (expresion != NULL) {
+  if (expresion) {
       printf("Free en expresion\n");
+      if(expresion->Izq)
     liberar_expresion(expresion->Izq);
+      if(expresion->Der)
     liberar_expresion(expresion->Der);
     if(expresion->simbolo){free(expresion->simbolo);}
     free(expresion);
   }
 }
 void liberar_stack(Stack stack) {
-  while (stack!=NULL) {
-      //Stack siguiente = stack->sig;
-    liberar_expresion(stack->dato);
-    //free(stack);
-    //stack = siguiente;
-    pop(&stack);
+  while (stack != NULL) {
+      Stack siguiente = NULL;
+      if(stack->sig)
+          siguiente = stack->sig;
+      printf("le 47\n");
+      if (stack->dato)
+          liberar_expresion(stack->dato);
+    free(stack);
+    stack = siguiente;
+      // pop(&stack);
   }
 }
 
@@ -142,13 +146,16 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
           t = nuevo_ENodo(operador, casilla, 0);
            if (casilla.aridad == 2) {
             t->Der = top(stack);
+            printf("pop 144\n");
             pop(&stack);
             cantStack--;
             t->Izq = top(stack);
+            printf("pop 148\n");
             pop(&stack);
             cantStack--;
           } else {
             t->Der = top(stack);
+            printf("pop 153\n");
             pop(&stack);
             cantStack--;
             t->Izq = NULL;
@@ -163,18 +170,21 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
       }
       }
     }
-  //imprimir_stack(stack);
+  imprimir_stack(stack);
   if (operadorNoExistente) {
     t = NULL;
+    printf("ls 172\n");
     liberar_stack(stack);
   } else {
     t = top(stack);
+    printf("pop 174\n");
     pop(&stack);
     cantStack--;
   }
   if (stack)
   {
     t = NULL;
+    printf("ls 183\n");
     liberar_stack(stack);
     //for(;cantStack;cantStack--)
     //   pop(&stack);
@@ -187,7 +197,7 @@ void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
 
 
 
-
+  Imprimir(t);
 
 
   *arbol = t;
