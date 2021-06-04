@@ -17,7 +17,7 @@ char *leer() {
 
 
     if (size <= index) {
-      size += 1;
+      size += 15;
       tmp = realloc(line, size);
       if (!tmp) {
         free(line);

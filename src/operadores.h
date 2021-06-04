@@ -4,12 +4,19 @@
 #include <stdio.h>
 
 typedef int (*FuncionEvaluacion)(int *args);
-
+/*
+Cada operador lo representamos como una casilla de una tabla que contiene a todos los operadores.
+Para representar esta tabla utilizamos una lista enlazada.
+Cada casilla contiene la aridad del operador y su funcion evaluacion
+*/
 typedef struct _OCasilla {
     int aridad;
     FuncionEvaluacion eval;
 } OCasilla;
-
+/*
+Dentro de cada nodo de la tabla almacenamos el simbolo que representa al operador, la casilla q contiene la aridad y funcion 
+evaluacion y un puntero al siguiente elemento
+*/
 typedef struct _ONodo {
     char *simbolo;
     OCasilla casilla;
@@ -18,12 +25,24 @@ typedef struct _ONodo {
 
 typedef ONodo *TablaOps;
 
+/*
+Definicion: Toma como parametros la tabla de operadores, un string , un int y una funcion. El String representa el simbolo,
+El int la aridad y la funcion la funcion evaluacion de un operador que se va a agregar a la tabla.
+*/
 void cargar_operador(TablaOps *tabla, char *simbolo, int aridad, FuncionEvaluacion eval);
-
+/*
+Definicion: Toma como parametros la tabla de operadores y un string. El string representa el simbolo de un operador.
+Revisa la tabla en busca de dicho operador y si lo encuentra lo devuelve
+*/
 OCasilla buscar_simbolo(TablaOps tabla, char *simbolo);
 
+/*
+Libera la memoria de la tabla de operadores
+*/
 void liberar_tabla(TablaOps tabla);
-
+/*
+Funciones de evaluacion de los operadores.
+*/
 int suma(int *args);
 int resta(int *args);
 int opuesto(int *args);

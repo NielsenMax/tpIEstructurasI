@@ -146,10 +146,12 @@ ETree cargar_expresion2(ETree t, TablaOps tablaOps, char *expresion) {
    }
    t = pop(&stack);
    if (stack) {
+       
        liberar_stack(stack);
        return NULL;
    }
    Imprimir(t);
+   imprimir_stack(stack);
    return t;
 }
 void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
