@@ -103,7 +103,6 @@ void Imprimir(ETree tree) {
 
 void imprimir_stack(Stack stack) {
   for (; stack; stack = stack->sig) {
-
     Imprimir(stack->dato);
     printf("|");
   }
