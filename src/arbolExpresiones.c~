@@ -1,69 +1,58 @@
+#define _DEFAULT_SOURCE
 #include "arbolExpresiones.h"
 #include "operadores.h"
 
-//#include <stdlib.h>
-//#include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+
 
 void push(Stack * stack, ETree dato) {
   Stack nuevoNodo = malloc(sizeof(SNodo));
   nuevoNodo->dato = dato;
   nuevoNodo->sig = *stack;
   *stack = nuevoNodo;
-  printf("PUSH");
 }
 
-ETree top(Stack stack) {
-
-  if (stack) {
-    return stack->dato;
-  }
-  return NULL;
-}
-
-void pop(Stack * stack) {
+ETree pop(Stack * stack) {
+  ETree retorno = NULL;
   if (*stack) {
     Stack siguiente = (*stack)->sig;
-    printf("POP\n");
-    //     liberar_expresion((*stack)->dato);
+    retorno = (*stack)->dato;
     free(*stack);
     *stack = siguiente;
+  }
+  return retorno;
 }
-}
+
 void liberar_expresion(ETree expresion) {
   if (expresion) {
-      printf("Free en expresion\n");
-      if(expresion->Izq)
     liberar_expresion(expresion->Izq);
-      if(expresion->Der)
     liberar_expresion(expresion->Der);
-    if(expresion->simbolo){free(expresion->simbolo);}
+    free(expresion->simbolo);
     free(expresion);
   }
 }
+
 void liberar_stack(Stack stack) {
   while (stack != NULL) {
-      Stack siguiente = NULL;
-      if(stack->sig)
-          siguiente = stack->sig;
-      printf("le 47\n");
-      if (stack->dato)
-          liberar_expresion(stack->dato);
+    Stack siguiente = NULL;
+    siguiente = stack->sig;
+    liberar_expresion(stack->dato);
     free(stack);
     stack = siguiente;
-      // pop(&stack);
   }
 }
 
 ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
   ETree nuevoNodo = malloc(sizeof(ENodo));
-  if (simbolo == NULL) {
-    nuevoNodo->tipo = 0;
-    nuevoNodo->simbolo = NULL;
+  if (simbolo == NULL) {        //el valor tipo del nodo es 0
+    nuevoNodo->tipo = 0;        //si corresponde con un numero
+    nuevoNodo->simbolo = NULL;  //es 1 si es para un operador
   } else {
     nuevoNodo->tipo = 1;
-    nuevoNodo->simbolo = malloc(sizeof(char) * strlen(simbolo)+1);
+    nuevoNodo->simbolo = malloc(sizeof(char) * strlen(simbolo) + 1);
     strcpy(nuevoNodo->simbolo, simbolo);
   }
   nuevoNodo->operador = operador;
@@ -73,153 +62,88 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
   return nuevoNodo;
 }
 
-void Imprimir(ETree tree) {
-
+void imprimir_ETree(ETree tree) {
   if (tree != NULL) {
-    if (tree->Izq && tree->Der)
-    {
-      printf("(");
-
-    }
-
-    Imprimir(tree->Izq);
-    if (tree->tipo == 1) {
+    printf("(");
+    imprimir_ETree(tree->Izq);
+    if (tree->tipo == 1)
       printf("%s", tree->simbolo);
-
-    } else {
+    else
       printf("%i", tree->valor);
-
-    }
-    Imprimir(tree->Der);
-    if (!tree->Der && !tree->Izq )
-    {
-
-      printf(")");
-
-    }
-  }
-
-}
-
-void imprimir_stack(Stack stack) {
-  for (; stack; stack = stack->sig) {
-
-    Imprimir(stack->dato);
-    printf("|");
+    imprimir_ETree(tree->Der);
+    printf(")");
   }
 }
 
-void cargar_expresion(ETree * arbol, TablaOps tablaOps, char *expresion) {
+int es_num(char *string) {
+  int retorno = 1;
+  for (int i = 0; string[i] && retorno; i++) {
+    if (!isdigit(string[i]))
+      retorno = 0;
+  }
+  return retorno;
+}
+
+ETree cargar_expresion(TablaOps tablaOps, char *expresion) {
+  char *string;
+  OCasilla casilla;
   Stack stack = NULL;
-  int valor = 0, largoOp = 0, operadorNoExistente = 0,i=0, cantStack = 0;
-  char operador[100];
-  ETree t;
-  OCasilla ct, casilla;
-  for (i=0;expresion[i] == ' '; i++) {}
-  for (; expresion[i] && !operadorNoExistente; i++) {
-          if (isdigit(expresion[i])) {
-        valor = valor * 10 + (expresion[i] - '0');
-        largoOp = 0;
-          }
-      else {
-          if(!largoOp){
-      casilla.aridad = -1;
-      casilla.eval = NULL;
-      t = nuevo_ENodo(NULL, ct, valor);
-      push(&stack, t);
-      cantStack++;
-      valor = 0;
-          }
-      for (;expresion[i] == ' '; i++) {}
-      if (isdigit(expresion[i])||!expresion[i])
-          i--;
-      else {
-        for (largoOp = 0; expresion[i] != ' ' && expresion[i]; i++) {
-          operador[largoOp] = expresion[i];
-          largoOp++;
-        }
-        if (expresion[i] == '\0')
-          i--;
-        operador[largoOp] = '\0';
-        casilla = buscar_simbolo(tablaOps, operador);
-        if (casilla.aridad != -1) {
-          t = nuevo_ENodo(operador, casilla, 0);
-           if (casilla.aridad == 2) {
-            t->Der = top(stack);
-            printf("pop 144\n");
-            pop(&stack);
-            cantStack--;
-            t->Izq = top(stack);
-            printf("pop 148\n");
-            pop(&stack);
-            cantStack--;
-          } else {
-            t->Der = top(stack);
-            printf("pop 153\n");
-            pop(&stack);
-            cantStack--;
-            t->Izq = NULL;
-          }
-          // printf("\n%s", t->Izq->simbolo);
-          push(&stack, t);
-          cantStack++;
-          //printf("|%s|", stack->dato->simbolo);
-        } else {
-          operadorNoExistente = 1;
-        }
+  ETree t = NULL;
+
+  while ((string = strsep(&expresion, " "))) {  //string avanza por cada espacio
+      casilla = buscar_simbolo(tablaOps, string); //busca si es un operador
+      if (casilla.aridad != -1) {  //si no es un operador tiene aridad de -1
+          t = nuevo_ENodo(string, casilla, 0); //pone el operador como nodo
+      t->Der = pop(&stack);  //el top del stack es su hijo derecho
+      if (!t->Der) {  //si es NULL es porque no habia nada para usar
+          liberar_expresion(t); //la expresion seria invalida
+          return NULL;
       }
+      if (casilla.aridad == 2) {  //comprueba si necesita hijo izquierdo
+          t->Izq = pop(&stack);   //que seria el top del stack
+        if (!t->Izq) {
+            liberar_expresion(t);  //si no hay es invalida la expresion
+          return NULL;
+        }
+      } else
+          t->Izq = NULL;  //si no necesita 2 hijos lo pone null
+      push(&stack, t);  //pushea el nuevo nodo al stack
+    } else {
+          if (es_num(string)) { //comprueba que el string sean solo numeros
+              int valor = atoi(string); //castea a int
+              casilla.aridad = -1;  //valores predefinidos para los nodos numero
+        casilla.eval = NULL;
+        t = nuevo_ENodo(NULL, casilla, valor); //crea el nodo
+        push(&stack, t);  //pushea el nodo numero al stack
+          } else { //si no eran solo ints entonces es un operador no valido
+              liberar_stack(stack); //libera el stack ya que no esta vacio
+        return NULL;
       }
     }
-  imprimir_stack(stack);
-  if (operadorNoExistente) {
-    t = NULL;
-    printf("ls 172\n");
-    liberar_stack(stack);
-  } else {
-    t = top(stack);
-    printf("pop 174\n");
-    pop(&stack);
-    cantStack--;
   }
-  if (stack)
-  {
-    t = NULL;
-    printf("ls 183\n");
-    liberar_stack(stack);
-    //for(;cantStack;cantStack--)
-    //   pop(&stack);
-    printf("STACK: ");
-    imprimir_stack(stack);
-
-
+  t = pop(&stack);  //el top del stack deberia ser el arbol final
+  if (stack) {  //si no esta vacio es porque la expresion era incorrecta
+      liberar_expresion(t); //libera el top previamiente popeado
+      liberar_stack(stack); //libera el resto del stack
+    return NULL;
   }
-
-
-
-
-  Imprimir(t);
-
-
-  *arbol = t;
-  liberar_stack(stack);
+  return t;
 }
-
-
 
 int evaluar_expresion(ETree expresion) {
-    int retorno = 0, temp[2];
-    if(expresion){
+  int retorno = 0, temp[2];
+  if (expresion) {
     if (expresion->tipo) {
-        if (expresion->operador.aridad == 1) {
-            temp[0] = evaluar_expresion(expresion->Der);
-        } else {
-            temp[0] = evaluar_expresion(expresion->Izq);
-            temp[1] = evaluar_expresion(expresion->Der);
-        }
-        retorno = expresion->operador.eval(temp);
+      if (expresion->operador.aridad == 1) {
+        temp[0] = evaluar_expresion(expresion->Der);
+      } else {
+        temp[0] = evaluar_expresion(expresion->Izq);
+        temp[1] = evaluar_expresion(expresion->Der);
+      }
+      retorno = expresion->operador.eval(temp);
     } else {
-        retorno = expresion->valor;
+      retorno = expresion->valor;
     }
-    }
-    return retorno;
+  }
+  return retorno;
 }

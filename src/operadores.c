@@ -20,6 +20,7 @@ int producto(int *args) {
   return args[0] * args[1];
 }
 
+//Optamos por devolver 0 si se divide por 0
 int division(int *args) {
   return args[1] == 0 ? 0 : round(args[0] / args[1]);
 }
@@ -59,4 +60,3 @@ OCasilla buscar_simbolo(TablaOps tabla, char *simbolo) {
   }
   return retorno;
 }
-

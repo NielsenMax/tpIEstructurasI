@@ -11,8 +11,8 @@ Para representar esta tabla utilizamos una lista enlazada.
 Cada casilla contiene la aridad del operador y su funcion evaluacion
 */
 typedef struct _OCasilla {
-  int aridad;
-  FuncionEvaluacion eval;
+    int aridad;
+    FuncionEvaluacion eval;
 } OCasilla;
 /*
 Dentro de cada nodo de la tabla almacenamos el simbolo que representa al
@@ -20,9 +20,9 @@ operador, la casilla q contiene la aridad y funcion
 evaluacion y un puntero al siguiente elemento
 */
 typedef struct _ONodo {
-  char *simbolo;
-  OCasilla casilla;
-  struct _ONodo *sig;
+    char *simbolo;
+    OCasilla casilla;
+    struct _ONodo *sig;
 } ONodo;
 /*
 Utilizamos esto para facilitar la lectura del codigo,
@@ -37,7 +37,7 @@ un int y una funcion. El String representa el simbolo,
 el int la aridad y el puntero a funcion la funcion evaluacion
 de un operador que se va a agregar a la tabla.
 */
-void cargar_operador(TablaOps * tabla, char *simbolo, int aridad,
+void cargar_operador(TablaOps *tabla, char *simbolo, int aridad,
                      FuncionEvaluacion eval);
 /*
 buscar_simbolo :: TablaOps -> (*char) -> OCasilla
