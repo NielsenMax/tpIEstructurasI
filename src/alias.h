@@ -2,7 +2,7 @@
 #define __ARBOL_ALIAS_H__
 #include "arbolExpresiones.h"
 /*
-Para relacionar cada alias con la expresion ingresada utilizamos un arbol de busqueda binario, cada nodo contiene 
+Para relacionar cada alias con la expresion ingresada utilizamos un arbol de busqueda binario, cada nodo contiene
 el alias, el arbol de expresion aritmetica, un puntero al hijo izquierdo y un puntero al hijo derecho.
 Para realizar las busquedas dentro del arbol utilizamos el alias ordenando el arbol en orden alfabetico.
 (El arbol no esta balanceado)
@@ -38,7 +38,7 @@ ETree Buscar_alias(ATree aliases,char *pal);
 Definicion: Toma como parametro un Arbol de alias y una string e imprime el Arbol de expresiones aritmeticas asociado a
 alias.
 */
-void Imprimir_alias(ATree aliases,char *pal);
+void imprimir_alias(ATree aliases,char *pal);
 
 
 /*

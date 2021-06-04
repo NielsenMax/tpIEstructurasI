@@ -21,7 +21,7 @@ typedef struct _ENodo {
 } ENodo;
 
 /*
-Utilizamos esto para facilitar la lectura del codigo, represetamos un puntero a ENodo  como ETree 
+Utilizamos esto para facilitar la lectura del codigo, represetamos un puntero a ENodo  como ETree
 */
 typedef ENodo *ETree;
 
@@ -37,7 +37,7 @@ typedef struct _SNodo {
 typedef SNodo *Stack;
 
 /*
-Definicion: Toma como parametros un Stack y un Arbol de expresion aritmetica y añade un nuevo nodo al stack con 
+Definicion: Toma como parametros un Stack y un Arbol de expresion aritmetica y añade un nuevo nodo al stack con
 dicho arbol como dato
 */
 void push(Stack *stack, ETree dato);
@@ -60,10 +60,8 @@ Devuelve un arbol de expresion aritmetica formado a partir de la expresion dada
 
 NOSE Q ONDA ESTO SI LE TENEMOS Q PASAR COMO PARAMETRO t SI AL FINAL DEVUELVE ALGO DSP FIJATE
 */
-ETree cargar_expresion2(ETree t, TablaOps tablaOps, char *expresion);
+ETree cargar_expresion(ETree t, TablaOps tablaOps, char *expresion);
 
-
-void cargar_expresion(ETree *arbol, TablaOps tablaOps, char *expresion);
 
 /*
 Definicion: Toma como parametro un arbol de expresion aritmetica y libera la memoria del mismo
@@ -77,6 +75,8 @@ int evaluar_expresion(ETree expresion);
 /*
 Definicion: Toma un arbol de expresion aritmetica y imprime el resultado de resolver la operacion que representa
 */
-void Imprimir(ETree tree);
+void imprimir_ETree(ETree tree);
+
+ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor);
 
 #endif // __ARBOL_EXPRESION_H__

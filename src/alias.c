@@ -45,11 +45,11 @@ ETree Buscar_alias(ATree aliases, char *pal) {
   }
 }
 
-void Imprimir_alias(ATree aliases, char *pal) {
+void imprimir_alias(ATree aliases, char *pal) {
   ETree t = NULL;
   t = Buscar_alias(aliases, pal);
   if (t) {
-    Imprimir(t);
+    imprimir_ETree(t);
   } else {
     printf("El alias no esta cargado, no se puede imprimir");
   }

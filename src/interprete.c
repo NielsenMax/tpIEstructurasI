@@ -93,12 +93,70 @@ void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
   }
   temp[t] = '\0';
   if (ioe == 1) {
-    Imprimir_alias(T, temp);
+    imprimir_alias(T, temp);
+    printf("\n");
   } else {
     Evaluar_alias(T, temp);
+    printf("\n");
   }
 
 
+}
+
+void normalizar_expresion(char *string) {
+    // space is 1 when a space character is found and
+    // 0 when any non-space character is found
+    int space = 0;
+
+    // `k` points to the next free position
+    int k = 0;
+
+    // iterate through the characters of the string
+    for (int i = 0; string[i]; i++)
+    {
+        // handle leading spaces in the string
+        while (k == 0 && string[i] && string[i] == ' ') {
+            i++;
+        }
+
+        // if the current character is a space
+        if (string[i] == ' ')
+        {
+            // if the flag was 0 earlier, i.e., the first occurrence of a
+            // space after a word
+            if (!space)
+            {
+                // copy current char (whitespace) at the next free index
+                // and set the flag
+                string[k++] = string[i];
+                space = 1;
+            }
+        }
+        // if the current character is a punctuation mark
+        /**else if (ispunct(string[i]))
+        {
+            // if the last assigned character was a space, overwrite it
+            // with the current character
+            if (k > 0 && string[k-1] == ' ') {
+                string[k-1] = string[i];
+            }
+            else {
+                // copy the current character at the next free index
+                string[k++] = string[i];
+            }
+            space = 0;
+            }**/
+        else {
+            // copy the current character at the next free index
+            string[k++] = string[i];
+            space = 0;
+        }
+    }
+
+    if (string[k - 1] == ' ')
+        string[--k] = '\0';
+    else
+    string[k] = '\0';
 }
 
 
@@ -120,9 +178,6 @@ ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
       tempa[ta] = input[i];
       ta++;
     }
-
-
-
   }
   if (isdigit(tempa[0])) {
     valid = 0;
@@ -150,10 +205,11 @@ ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
 
   tempe[te] = '\0';
   if (valid && flag) {
-    printf("%s,%s", tempa, tempe);
+      //printf("%s,%s", tempa, tempe);
     ETree t = NULL;
     liberar_expresion(t);
-   t= cargar_expresion2(t, tabla, tempe);
+    normalizar_expresion(tempe);
+   t= cargar_expresion(t, tabla, tempe);
     if (t){
 
         //   ATree temp = T;
@@ -178,7 +234,7 @@ void interpretar(ATree T, TablaOps tabla) {
     printf("\n");
     int a, *fin = &a;
     int menu = opciones(input, fin);
-    printf("OPCION: %i\n", menu);
+    //printf("OPCION: %i\n", menu);
     if (menu) {
       if (menu == 1) {
 
