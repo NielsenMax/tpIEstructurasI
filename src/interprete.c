@@ -102,7 +102,7 @@ void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
 }
 
 
-void interpretar_alias(char *input, ATree *T, TablaOps tabla, int fin) {
+ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
 
   int i, ta = 0, te = 0, espacio = 0, valid = 1, flag = 0;
   int len = strlen(input);
@@ -120,6 +120,7 @@ void interpretar_alias(char *input, ATree *T, TablaOps tabla, int fin) {
       tempa[ta] = input[i];
       ta++;
     }
+
 
 
   }
@@ -153,13 +154,18 @@ void interpretar_alias(char *input, ATree *T, TablaOps tabla, int fin) {
     ETree t = NULL;
     liberar_expresion(t);
     cargar_expresion(&t, tabla, tempe);
-    if (t)
-      *T = insertar_alias(t, *T, tempa);
+    if (t){
+
+        //   ATree temp = T;
+        T = insertar_alias(t, T, tempa);
+        //    liberar_alias(temp);
+        //free(temp);
+    }
   } else {
     printf("la expresion o el alias que se quiere cargar es invalida");
   }
 
-
+  return T;
 
 
 }
@@ -185,13 +191,17 @@ void interpretar(ATree T, TablaOps tabla) {
       }
 
     } else {
-      interpretar_alias(input, &T, tabla, a);
+//        ATree temp = T;
+      T = interpretar_alias(input, T, tabla, a);
+      //    liberar_alias(temp);
+
     }
     free(input);
     input = leer();
 
   }
   free(input);
+  liberar_alias(T);
 }
 
 void presentacion() {
