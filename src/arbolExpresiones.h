@@ -23,9 +23,11 @@ typedef SNodo *Stack;
 
 void push(Stack *stack, ETree dato);
 
-void pop(Stack *stack);
+ETree pop(Stack *stack);
 
 void liberar_stack(Stack stack);
+
+ETree cargar_expresion2(ETree t, TablaOps tablaOps, char *expresion);
 
 void cargar_expresion(ETree *arbol, TablaOps tablaOps, char *expresion);
 

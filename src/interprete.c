@@ -153,7 +153,7 @@ ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
     printf("%s,%s", tempa, tempe);
     ETree t = NULL;
     liberar_expresion(t);
-    cargar_expresion(&t, tabla, tempe);
+   t= cargar_expresion2(t, tabla, tempe);
     if (t){
 
         //   ATree temp = T;
@@ -263,7 +263,7 @@ int main() {
 
   liberar_tabla(tabla);
 
-  liberar_alias(T);
+  //liberar_alias(T);
 
 
 }
