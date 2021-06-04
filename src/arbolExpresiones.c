@@ -64,14 +64,16 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
 
 void imprimir_ETree(ETree tree) {
   if (tree != NULL) {
-    printf("(");
+    if (tree->Izq || tree->Der)
+      printf("(");
     imprimir_ETree(tree->Izq);
     if (tree->tipo == 1)
       printf("%s", tree->simbolo);
     else
       printf("%i", tree->valor);
     imprimir_ETree(tree->Der);
-    printf(")");
+    if (tree->Izq || tree->Der)
+      printf(")");
   }
 }
 
@@ -114,17 +116,17 @@ ETree cargar_expresion(TablaOps tablaOps, char *expresion) {
         casilla.aridad = -1;    //valores predefinidos para los nodos numero
         casilla.eval = NULL;
         t = nuevo_ENodo(NULL, casilla, valor);  //crea el nodo
-        push(&stack, t);       //pushea el nodo numero al stack
-      } else {          //si no eran solo ints entonces es un operador no valido
-        liberar_stack(stack);  //libera el stack ya que no esta vacio
+        push(&stack, t);        //pushea el nodo numero al stack
+      } else {                  //si no eran solo ints entonces es un operador no valido
+        liberar_stack(stack);   //libera el stack ya que no esta vacio
         return NULL;
       }
     }
   }
-  t = pop(&stack);       //el top del stack deberia ser el arbol final
-  if (stack) {          //si no esta vacio es porque la expresion era incorrecta
-    liberar_expresion(t);//libera el top previamiente popeado
-    liberar_stack(stack);//libera el resto del stack
+  t = pop(&stack);              //el top del stack deberia ser el arbol final
+  if (stack) {                  //si no esta vacio es porque la expresion era incorrecta
+    liberar_expresion(t);       //libera el top previamiente popeado
+    liberar_stack(stack);       //libera el resto del stack
     return NULL;
   }
   return t;

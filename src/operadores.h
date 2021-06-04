@@ -31,7 +31,7 @@ represetamos un puntero a ONodo como TablaOps
 typedef ONodo *TablaOps;
 
 /*
-cargar_operador :: (*TablaOps) -> (*char) -> int
+cargar_operador :: (*TablaOps) -> (*char) -> int -> ()
 Definicion: Toma como parametros la tabla de operadores, un string,
 un int y una funcion. El String representa el simbolo,
 el int la aridad y el puntero a funcion la funcion evaluacion
@@ -50,7 +50,7 @@ y su puntero a la funcion evaluadora es null
 OCasilla buscar_simbolo(TablaOps tabla, char *simbolo);
 
 /*
-liberar_tabla :: TablaOps
+liberar_tabla :: TablaOps -> ()
 Definicion: libera la memoria de la tabla de operadores
 */
 void liberar_tabla(TablaOps tabla);

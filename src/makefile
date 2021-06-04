@@ -1,8 +1,11 @@
-#esto es el makefile
 CFLAGS = -Wall -Wextra -Werror -std=c99 -g
 CC= gcc
 
+main: main.o operadores.o arbolExpresiones.o  alias.o interprete.o
+	$(CC) $(CFLAGS) -o main main.o operadores.o arbolExpresiones.o alias.o interprete.o -lm
 
+valgrind : main
+	valgrind --tool=memcheck --leak-check=full ./main
 test:  t.out operadores.c arbolExpresiones.c alias.c interprete.c  ../tests/test.c
 	$(CC) $(CFLAGS) -o test t.out operadores.c arbolExpresiones.c alias.c interprete.c ../tests/test.c -lm
 
@@ -10,9 +13,7 @@ test:  t.out operadores.c arbolExpresiones.c alias.c interprete.c  ../tests/test
 t.out:	../tests/test.c arbolExpresiones.c arbolExpresiones.h operadores.c operadores.h alias.c alias.h interprete.c interprete.h 
 	$(CC) $(CFLAGS) ../tests/test.c arbolExpresiones.c operadores.c alias.c interprete.c -lm
 
-
-main: main.o operadores.o arbolExpresiones.o  alias.o interprete.o
-	$(CC) $(CFLAGS) -o main main.o operadores.o arbolExpresiones.o alias.o interprete.o -lm
+	
 
 main.out: main.c interprete.o alias.o arbolExpresiones.o operadores.o
 	$(CC) $(CFLAGS) main.c -lm

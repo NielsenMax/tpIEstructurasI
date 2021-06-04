@@ -64,6 +64,7 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
 
 void imprimir_ETree(ETree tree) {
   if (tree != NULL) {
+      if (tree->Izq || tree->Der)
     printf("(");
     imprimir_ETree(tree->Izq);
     if (tree->tipo == 1)
@@ -71,6 +72,7 @@ void imprimir_ETree(ETree tree) {
     else
       printf("%i", tree->valor);
     imprimir_ETree(tree->Der);
+    if (tree->Izq || tree->Der)
     printf(")");
   }
 }
@@ -91,40 +93,40 @@ ETree cargar_expresion(TablaOps tablaOps, char *expresion) {
   ETree t = NULL;
 
   while ((string = strsep(&expresion, " "))) {  //string avanza por cada espacio
-      casilla = buscar_simbolo(tablaOps, string); //busca si es un operador
-      if (casilla.aridad != -1) {  //si no es un operador tiene aridad de -1
-          t = nuevo_ENodo(string, casilla, 0); //pone el operador como nodo
-      t->Der = pop(&stack);  //el top del stack es su hijo derecho
-      if (!t->Der) {  //si es NULL es porque no habia nada para usar
-          liberar_expresion(t); //la expresion seria invalida
-          return NULL;
+    casilla = buscar_simbolo(tablaOps, string); //busca si es un operador
+    if (casilla.aridad != -1) { //si no es un operador tiene aridad de -1
+      t = nuevo_ENodo(string, casilla, 0);      //pone el operador como nodo
+      t->Der = pop(&stack);     //el top del stack es su hijo derecho
+      if (!t->Der) {            //si es NULL es porque no habia nada para usar
+        liberar_expresion(t);   //la expresion seria invalida
+        return NULL;
       }
-      if (casilla.aridad == 2) {  //comprueba si necesita hijo izquierdo
-          t->Izq = pop(&stack);   //que seria el top del stack
+      if (casilla.aridad == 2) {        //comprueba si necesita hijo izquierdo
+        t->Izq = pop(&stack);   //que seria el top del stack
         if (!t->Izq) {
-            liberar_expresion(t);  //si no hay es invalida la expresion
+          liberar_expresion(t); //si no hay es invalida la expresion
           return NULL;
         }
       } else
-          t->Izq = NULL;  //si no necesita 2 hijos lo pone null
-      push(&stack, t);  //pushea el nuevo nodo al stack
+        t->Izq = NULL;          //si no necesita 2 hijos lo pone null
+      push(&stack, t);          //pushea el nuevo nodo al stack
     } else {
-          if (es_num(string)) { //comprueba que el string sean solo numeros
-              int valor = atoi(string); //castea a int
-              casilla.aridad = -1;  //valores predefinidos para los nodos numero
+      if (es_num(string)) {     //comprueba que el string sean solo numeros
+        int valor = atoi(string);       //castea a int
+        casilla.aridad = -1;    //valores predefinidos para los nodos numero
         casilla.eval = NULL;
-        t = nuevo_ENodo(NULL, casilla, valor); //crea el nodo
-        push(&stack, t);  //pushea el nodo numero al stack
-          } else { //si no eran solo ints entonces es un operador no valido
-              liberar_stack(stack); //libera el stack ya que no esta vacio
+        t = nuevo_ENodo(NULL, casilla, valor);  //crea el nodo
+        push(&stack, t);        //pushea el nodo numero al stack
+      } else {                  //si no eran solo ints entonces es un operador no valido
+        liberar_stack(stack);   //libera el stack ya que no esta vacio
         return NULL;
       }
     }
   }
-  t = pop(&stack);  //el top del stack deberia ser el arbol final
-  if (stack) {  //si no esta vacio es porque la expresion era incorrecta
-      liberar_expresion(t); //libera el top previamiente popeado
-      liberar_stack(stack); //libera el resto del stack
+  t = pop(&stack);              //el top del stack deberia ser el arbol final
+  if (stack) {                  //si no esta vacio es porque la expresion era incorrecta
+    liberar_expresion(t);       //libera el top previamiente popeado
+    liberar_stack(stack);       //libera el resto del stack
     return NULL;
   }
   return t;

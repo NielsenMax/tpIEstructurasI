@@ -42,7 +42,7 @@ typedef struct _SNodo {
 typedef SNodo *Stack;
 
 /*
-push :: (*Stack) -> ETree
+push :: (*Stack) -> ETree -> ()
 Definicion: Toma como parametros un Stack y un Arbol de expresion aritmetica
 añade un nuevo nodo al stack con dicho arbol como dato
 */
@@ -56,7 +56,7 @@ que almacenaba el primer nodo y libera el nodo del stack
 ETree pop(Stack * stack);
 
 /*
-liberar_stack :: Stack
+liberar_stack :: Stack -> ()
 Definicion: Toma como parametro un Stack y libera la memoria del mismo
 */
 void liberar_stack(Stack stack);
@@ -92,7 +92,7 @@ ETree cargar_expresion(TablaOps tablaOps, char *expresion);
 
 
 /*
-liberar_expresion :: ETree
+liberar_expresion :: ETree -> ()
 Definicion: Toma como parametro un arbol de expresion aritmetica
 y libera la memoria del mismo
 */
@@ -116,7 +116,7 @@ int evaluar_expresion(ETree expresion);
 
 
 /*
-imprimir_ETree :: ETree
+imprimir_ETree :: ETree -> ()
 Definicion: Toma un arbol de expresion aritmetica y lo imprime en pantalla
 */
 void imprimir_ETree(ETree tree);
