@@ -60,7 +60,7 @@ Devuelve un arbol de expresion aritmetica formado a partir de la expresion dada
 
 NOSE Q ONDA ESTO SI LE TENEMOS Q PASAR COMO PARAMETRO t SI AL FINAL DEVUELVE ALGO DSP FIJATE
 */
-ETree cargar_expresion(ETree t, TablaOps tablaOps, char *expresion);
+ETree cargar_expresion(TablaOps tablaOps, char *expresion);
 
 
 /*
@@ -78,5 +78,7 @@ Definicion: Toma un arbol de expresion aritmetica y imprime el resultado de reso
 void imprimir_ETree(ETree tree);
 
 ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor);
+
+int es_num(char *string);
 
 #endif // __ARBOL_EXPRESION_H__

@@ -25,7 +25,7 @@ ATree insertar_alias(ETree operacion, ATree raiz, char *pal) {
 
 }
 
-ETree Buscar_alias(ATree aliases, char *pal) {
+ETree buscar_alias(ATree aliases, char *pal) {
   int no = 1;
   if (aliases == NULL) {
     return NULL;
@@ -33,10 +33,10 @@ ETree Buscar_alias(ATree aliases, char *pal) {
     return (aliases->arbol);
     no = 0;
   } else if (strcmp(aliases->alias, pal) > 0) {
-    return Buscar_alias(aliases->Izq, pal);
+    return buscar_alias(aliases->Izq, pal);
     no = 0;
   } else {
-    return Buscar_alias(aliases->Der, pal);
+    return buscar_alias(aliases->Der, pal);
     no = 0;
   }
 
@@ -47,7 +47,7 @@ ETree Buscar_alias(ATree aliases, char *pal) {
 
 void imprimir_alias(ATree aliases, char *pal) {
   ETree t = NULL;
-  t = Buscar_alias(aliases, pal);
+  t = buscar_alias(aliases, pal);
   if (t) {
     imprimir_ETree(t);
   } else {
@@ -59,7 +59,7 @@ void imprimir_alias(ATree aliases, char *pal) {
 
 void Evaluar_alias(ATree aliases, char *pal) {
   ETree t = NULL;
-  t = Buscar_alias(aliases, pal);
+  t = buscar_alias(aliases, pal);
   if (t) {
     printf("\nEVALUAR: %i\n", evaluar_expresion(t));
   } else {

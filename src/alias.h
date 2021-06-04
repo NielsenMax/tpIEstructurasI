@@ -32,7 +32,7 @@ ATree insertar_alias(ETree operacion,ATree raiz,char *pal);
 Definicion: Toma como parametro un Arbol de Alias y un string y devuelve el Arbol de expresiones aritmeticas asociado
 a dicho alias
 */
-ETree Buscar_alias(ATree aliases,char *pal);
+ETree buscar_alias(ATree aliases,char *pal);
 
 /*
 Definicion: Toma como parametro un Arbol de alias y una string e imprime el Arbol de expresiones aritmeticas asociado a

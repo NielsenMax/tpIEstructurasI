@@ -209,7 +209,7 @@ ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
     ETree t = NULL;
     liberar_expresion(t);
     normalizar_expresion(tempe);
-   t= cargar_expresion(t, tabla, tempe);
+   t= cargar_expresion(tabla, tempe);
     if (t){
 
         //   ATree temp = T;

@@ -118,10 +118,20 @@ void imprimir_stack(Stack stack) {
   }
 }
 
-ETree cargar_expresion(ETree t, TablaOps tablaOps, char *expresion) {
+int es_num(char *string) {
+    int retorno = 1;
+    for (int i = 0; string[i] && retorno; i++) {
+        if (!isdigit(string[i]))
+            retorno = 0;
+    }
+    return retorno;
+}
+
+ETree cargar_expresion(TablaOps tablaOps, char *expresion) {
     char* string;
     OCasilla casilla;
     Stack stack = NULL;
+    ETree t = NULL;
     //(string = strsep(&expresion, " "));
     while ((string = strsep(&expresion, " "))) {
        casilla = buscar_simbolo(tablaOps, string);
@@ -143,11 +153,16 @@ ETree cargar_expresion(ETree t, TablaOps tablaOps, char *expresion) {
                t->Izq = NULL;
            push(&stack, t);
        } else {
-           int valor = atoi(string);
-           casilla.aridad = -1;
-           casilla.eval = NULL;
-           t = nuevo_ENodo(NULL, casilla, valor);
-           push(&stack, t);
+           if (es_num(string)) {
+               int valor = atoi(string);
+               casilla.aridad = -1;
+               casilla.eval = NULL;
+               t = nuevo_ENodo(NULL, casilla, valor);
+               push(&stack, t);
+           } else {
+               liberar_stack(stack);
+               return NULL;
+           }
        }
    }
    t = pop(&stack);
