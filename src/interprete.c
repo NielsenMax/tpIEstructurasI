@@ -35,6 +35,8 @@ char *leer() {
   return line;
 }
 
+//###########TEST############
+
 void minusculas(char *palabra) {
   for (; *palabra; ++palabra)
     *palabra = tolower(*palabra);
@@ -43,7 +45,7 @@ void minusculas(char *palabra) {
 }
 
 
-
+//###########TEST############
 int opciones(char *input, int *fin) {
   int i, t = 0, igual = 0;
   char temp[strlen(input)];
@@ -77,6 +79,10 @@ int opciones(char *input, int *fin) {
 
   return 3;
 }
+
+
+//###########TEST############
+
 
 void normalizar_expresion(char *string) {
     // space is 1 when a space character is found and
@@ -133,6 +139,8 @@ void normalizar_expresion(char *string) {
     else
     string[k] = '\0';
 }
+
+
 void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
   
   char *alias;
@@ -149,11 +157,9 @@ void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
 
 }
 
-
+//###########TEST############
 
 ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
-
-
 
   char *alias; 
 
@@ -176,9 +182,11 @@ ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
 
   return T;
 
-
-
 }
+
+
+
+
 
 void interpretar(ATree T, TablaOps tabla) {
   printf("ingrese un comando: \n:");
@@ -209,6 +217,8 @@ void interpretar(ATree T, TablaOps tabla) {
   free(input);
   liberar_alias(T);
 }
+
+
 
 void presentacion() {
   char c = 'a';
