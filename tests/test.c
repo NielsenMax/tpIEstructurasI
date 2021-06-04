@@ -1,5 +1,6 @@
 #include "../src/operadores.h"
 #include "../src/arbolExpresiones.h"
+#include "../src/alias.h"
 #include <string.h>
 #include <assert.h>
 
@@ -177,6 +178,48 @@ int main() {
         }
         liberar_tabla(tabla);
         printf("FIN TEST FUNCIONES arbolExpresiones.c\n");
+    }
+    {
+        printf("TEST FUNCIONES alias.c\n");
+        TablaOps tabla = NULL;
+        cargar_operador(&tabla, "+", 2, suma);
+        cargar_operador(&tabla, "-", 2, resta);
+        cargar_operador(&tabla, "--", 1, opuesto);
+        cargar_operador(&tabla, "*", 2, producto);
+        cargar_operador(&tabla, "/", 2, division);
+        cargar_operador(&tabla, "%", 2, modulo);
+        cargar_operador(&tabla, "^", 2, potencia);
+        {
+            printf("TESTEANDO insertar_alias...\n");
+            ETree t;
+            char *aux = strdup("1 -- 3 *");
+            ATree a = NULL;
+            t = cargar_expresion(tabla, aux);
+            a = insertar_alias(t, a, "b");
+            free(aux);
+            aux = strdup("5 -- 13 + 2 * 7 +");
+            t = cargar_expresion(tabla, aux);
+            a = insertar_alias(t, a, "a");
+            free(aux);
+            aux = strdup("3 2 * 7 +");
+            t = cargar_expresion(tabla, aux);
+            a = insertar_alias(t, a, "c");
+            free(aux);
+            assert(!strcmp(a->alias, "b"));
+            assert(!strcmp(a->Izq->alias, "a"));
+            assert(!strcmp(a->Der->alias, "c"));
+            assert(!a->Izq->Izq);
+            assert(!a->Der->Der);
+            printf("FIN DEL TESTEO insertar_alias\n");
+            printf("TESTEANDO buscar_alias...\n");
+            assert(!strcmp(buscar_alias(a, "a")->simbolo, "+"));
+            assert(!strcmp(buscar_alias(a, "b")->simbolo, "*"));
+            assert(!strcmp(buscar_alias(a, "c")->simbolo, "+"));
+            liberar_alias(a);
+            printf("FIN DEL TESTEO buscar_alias\n");
+        }
+        liberar_tabla(tabla);
+        printf("FIN TEST FUNCIONES alias.c\n");
     }
     return 0;
 }
