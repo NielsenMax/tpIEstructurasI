@@ -10,34 +10,31 @@ char *leer() {
   int ch = EOF;
 
   while (ch) {
-    ch = getchar();
+    ch = getchar(); //Cargamos un caracter por teclado
 
-
-    if (ch == EOF || ch == '\n')
+    if (ch == EOF || ch == '\n') //Si es un '\n' lo colocamos en 0
       ch = 0;
 
-
-    if (size <= index) {
-      size += 15;
-      tmp = realloc(line, size);
-      if (!tmp) {
+    if (size <= index) {  //Si el tamaño que usamos es mas chico que el largo de la input
+      size += 15;   //Sumamos al tamaño 
+      tmp = realloc(line, size);  //Realocamos memoria con el nuevo tamaño 
+      if (!tmp) { //Si tmp es NULL luego de realocar liberamos la memoria y terminamos el while
         free(line);
         line = NULL;
         break;
       }
-      line = tmp;
+      line = tmp;  
     }
 
-
-    line[index++] = ch;
+    line[index++] = ch; //Añadimos el caracter
   }
 
   return line;
 }
 
-//###########TEST############
 
-void minusculas(char *palabra) {
+
+void minusculas (char *palabra) {
   for (; *palabra; ++palabra)
     *palabra = tolower(*palabra);
 
@@ -45,19 +42,19 @@ void minusculas(char *palabra) {
 }
 
 
-//###########TEST############
+
 int opciones(char *input, int *fin) {
   int i, t = 0, igual = 0;
   char temp[strlen(input)];
   temp[0] = '\0';
   for (i = 0; input[i]; i++) {
-    if (temp[0] && input[i] == ' ') {
+    if (temp[0] && (input[i] == ' ' || isdigit(input[i]))) {  //Revisamos que tenemos cargado en temp cuando nos encontramos un espacio
 
-      if (!strcmp(temp, "imprimir")) {
+      if (!strcmp(temp, "imprimir") && !igual) {
 
-        *fin = i;
+        *fin = i;      //fin nos va a indicar donde termina la palabra clave del comando en el string de la input
         return 1;
-      } else if (!strcmp(temp, "evaluar")) {
+      } else if (!strcmp(temp, "evaluar") && !igual) {
         *fin = i;
         return 2;
       } else if (igual && !strcmp(temp, "cargar")) {
@@ -65,11 +62,11 @@ int opciones(char *input, int *fin) {
         return 0;
       }
     }
-    if (input[i] != ' ' && input[i] != '=') {
+    if (input[i] != ' ' && input[i] != '=') {   //Agregamos los caracteres si no son espacios ni iguales
       temp[t] = input[i];
       t++;
       temp[t] = '\0';
-    } else if (input[i] == '=') {
+    } else if (input[i] == '=') { //Si encontramos un igual reseteamos temp y marcamos la flag 'igual'  
       temp[0] = '\0';
       t = 0;
       igual = 1;
@@ -81,71 +78,47 @@ int opciones(char *input, int *fin) {
 }
 
 
-//###########TEST############
+
 
 
 void normalizar_expresion(char *string) {
-    // space is 1 when a space character is found and
-    // 0 when any non-space character is found
-    int space = 0;
 
-    // `k` points to the next free position
-    int k = 0;
+    int space = 0; //1 si se encuentra un espacio 0 si es cualquier otro caracter
 
-    // iterate through the characters of the string
-    for (int i = 0; string[i]; i++)
-    {
-        // handle leading spaces in the string
-        while (k == 0 && string[i] && string[i] == ' ') {
+    int k = 0; //apunta a la siguiente posicion libre
+
+    for (int i = 0; string[i]; i++) {
+        
+        while (k == 0 && string[i] && string[i] == ' ') { //Elimina los espacios al inicio
             i++;
         }
-
-        // if the current character is a space
-        if (string[i] == ' ')
-        {
-            // if the flag was 0 earlier, i.e., the first occurrence of a
-            // space after a word
-            if (!space)
+        if (string[i] == ' ') {
+            
+            if (!space) //Venimos de un caracter y encontramos espacio
             {
-                // copy current char (whitespace) at the next free index
-                // and set the flag
-                string[k++] = string[i];
+                
+                string[k++] = string[i]; //Guardamos el espacio y marccamos la flag
                 space = 1;
             }
-        }
-        // if the current character is a punctuation mark
-        /**else if (ispunct(string[i]))
-        {
-            // if the last assigned character was a space, overwrite it
-            // with the current character
-            if (k > 0 && string[k-1] == ' ') {
-                string[k-1] = string[i];
-            }
-            else {
-                // copy the current character at the next free index
-                string[k++] = string[i];
-            }
-            space = 0;
-            }**/
-        else {
-            // copy the current character at the next free index
-            string[k++] = string[i];
+        } else {
+            
+            string[k++] = string[i]; //Guardamos el caraccter si no es un espacio y marcamos la flag
             space = 0;
         }
     }
 
-    if (string[k - 1] == ' ')
+    if (string[k - 1] == ' ')  //Elimina los espacios finales
         string[--k] = '\0';
     else
     string[k] = '\0';
 }
 
 
-void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
+void interpretar_IoE(char *input, int posClave, ATree T, int ioe) {
   
   char *alias;
-  alias = input +fin;
-  normalizar_expresion(alias);
+  alias = input + posClave;         //Nos posicionamos despues de la palabra clave del comando
+  normalizar_expresion(alias); //Normalizamos la expresion y realizamos la impresion o evaluacion
   if (ioe == 1) {
     imprimir_alias(T, alias);
     printf("\n");
@@ -157,29 +130,40 @@ void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
 
 }
 
-//###########TEST############
 
-ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
 
-  char *alias; 
-
-  alias=strsep(&input,"=");
-  fin = fin - strlen(alias);
+ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int posClave) {
+  int valid = 1;
+  char *alias;
+  alias = strsep(&input, "=");   //Separamos la input en dos por el primer '='
+  posClave = posClave - strlen(alias);
+  input = input + posClave-1;        //Avanza hasta luego de la palabra clave 'cargar'
   normalizar_expresion(alias);
-  input = input + fin;
   normalizar_expresion(input);
-
-  ETree t = NULL;
-  liberar_expresion(t);
-  t= cargar_expresion(tabla, input);
-  if (t){        
+  if (isdigit(alias[0]))  //Revisa que el alias no empieze en un numero
+    valid = 0;
+  else {
+    for (int i=1; alias[i]; i++) {   //Revisa que el alias solo contenga caracteres alfanumericos
+      if (!isalnum(alias[i]))
+       valid = 0; 
+    }
+  }
+  if (valid) {
+    ETree t = NULL;
+    liberar_expresion(t);
+    t = cargar_expresion(tabla, input);
+  
+    if (t) {        
         T = insertar_alias(t, T, alias);
         printf("Se cargo la expresion con exito\n");
-  }
-  else {
-    printf("la expresion o el alias que se quiere cargar es invalida\n");
+    } else {
+      printf("La expresion o el alias que se quiere cargar es invalida\n");
+    }
+  } else {
+    printf("El alias es invalido\n");
   }
 
+  
   return T;
 
 }
@@ -189,30 +173,29 @@ ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
 
 
 void interpretar(ATree T, TablaOps tabla) {
+
   printf("ingrese un comando: \n:");
+  printf(">");
   char *input = leer();
   minusculas(input);
   while (strcmp(input, "salir")) {
     printf("\n");
-    int a, *fin = &a;
+    int posClave, *fin = &posClave;
     int menu = opciones(input, fin);
 
     if (menu) {
-      if (menu == 1 || menu == 2) {
-
-        interpretar_IoE(input, a, T, menu);
-
-      }else {
+      if (menu == 1 || menu == 2) 
+        interpretar_IoE(input, posClave, T, menu);        
+      else
         printf("el ingreso es invalido\n");
-      }
 
     } else {
-      T = interpretar_alias(input, T, tabla, a);
+      T = interpretar_alias(input, T, tabla, posClave);
 
     }
     free(input);
+    printf(">");
     input = leer();
-
   }
   free(input);
   liberar_alias(T);
@@ -237,9 +220,7 @@ void presentacion() {
     printf
         ("\nNOTAS:\n-- No se distinguen mayusculas de minusculas\n--Los espacios antes del primer caracter son ignorados.\n--Se considera ALIAS a todo lo escrito antes del igual");
     printf
-        (" pero se puede separar el alias de el '=' con un solo espacio y este va a ser ignorado. Para hacer mas clara la input\n");
-    printf
-        ("--Los alias pueden ser varias palabras o contener espacios al final pero el espacio inmediatamente anterior al igual es ignorado\n");
+        ("--Los alias solo pueden contener caracteres alfanumericos y no pueden empezar con un numero\n");
     printf
         ("--Todo lo escrito despues de la palabra clave 'cargar' es considerado expresion aritmetica\n");
 
