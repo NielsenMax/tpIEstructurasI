@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <string.h>
 
-ATree insertar_alias(ETree operacion, ATree raiz, char *pal) {
+ATree insertar_alias (ETree operacion, ATree raiz, char *pal) {
 
   if (raiz == NULL) {
     ATree nuevoNodo = malloc(sizeof(ANodo));
@@ -14,6 +14,7 @@ ATree insertar_alias(ETree operacion, ATree raiz, char *pal) {
     nuevoNodo->Izq = NULL;
     nuevoNodo->Der = NULL;
     return nuevoNodo;
+
   } else if (strcmp(raiz->alias, pal) > 0) {
     raiz->Izq = insertar_alias(operacion, raiz->Izq, pal);
   } else {
@@ -25,27 +26,21 @@ ATree insertar_alias(ETree operacion, ATree raiz, char *pal) {
 
 }
 
-ETree buscar_alias(ATree aliases, char *pal) {
-  int no = 1;
+ETree buscar_alias (ATree aliases, char *pal) {
   if (aliases == NULL) {
     return NULL;
   } else if (strcmp(aliases->alias, pal) == 0) {
     return (aliases->arbol);
-    no = 0;
   } else if (strcmp(aliases->alias, pal) > 0) {
     return buscar_alias(aliases->Izq, pal);
-    no = 0;
   } else {
     return buscar_alias(aliases->Der, pal);
-    no = 0;
   }
 
-  if (no) {
-    printf("\n no se encontro el alias\n");
-  }
+
 }
 
-void imprimir_alias(ATree aliases, char *pal) {
+void imprimir_alias (ATree aliases, char *pal) {
   ETree t = NULL;
   t = buscar_alias(aliases, pal);
   if (t) {
@@ -57,7 +52,7 @@ void imprimir_alias(ATree aliases, char *pal) {
 
 }
 
-void evaluar_alias(ATree aliases, char *pal) {
+void evaluar_alias (ATree aliases, char *pal) {
   ETree t = NULL;
   t = buscar_alias(aliases, pal);
   if (t) {
@@ -66,8 +61,8 @@ void evaluar_alias(ATree aliases, char *pal) {
     printf("El alias no esta cargado, no se puede evaluar");
   }
 
-}// asdfsad
-void liberar_alias(ATree tree) {
+}
+void liberar_alias (ATree tree) {
   if (tree != NULL) {
 
     liberar_alias(tree->Izq);
