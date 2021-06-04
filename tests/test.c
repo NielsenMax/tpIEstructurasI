@@ -215,6 +215,7 @@ int main() {
             assert(!strcmp(buscar_alias(a, "a")->simbolo, "+"));
             assert(!strcmp(buscar_alias(a, "b")->simbolo, "*"));
             assert(!strcmp(buscar_alias(a, "c")->simbolo, "+"));
+            assert(!buscar_alias(a, "d"));
             liberar_alias(a);
             printf("FIN DEL TESTEO buscar_alias\n");
         }
