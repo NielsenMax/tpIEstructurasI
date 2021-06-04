@@ -66,7 +66,7 @@ void evaluar_alias(ATree aliases, char *pal) {
     printf("El alias no esta cargado, no se puede evaluar");
   }
 
-}
+}// asdfsad
 void liberar_alias(ATree tree) {
   if (tree != NULL) {
 
