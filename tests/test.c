@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include "../src/operadores.h"
 #include "../src/arbolExpresiones.h"
 #include "../src/alias.h"
@@ -9,7 +10,7 @@ int main() {
     printf("TEST FUNCIONES operador.c");
     {
         printf("TESTEANDO cargar_operador...\n");
-        TablaOps t = NULL, t2 = NULL;
+        TablaOps t = NULL;
         cargar_operador(&t, "+", 2, suma);
         assert(!strcmp(t->simbolo, "+"));
         assert(t->casilla.aridad == 2);
