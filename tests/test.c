@@ -99,9 +99,84 @@ int main() {
             push(&stack, t);
             assert(stack->dato == t);
             assert(stack->sig->dato->valor == 2);
+
+            ct.aridad = 2;
+            ct.eval = suma;
+            t = nuevo_ENodo("+", ct, 0);
+            push(&stack, t);
+            assert(stack->dato == t);
+            assert(stack->sig->dato->valor == 3);
             printf("FIN DEL TESTEO push\n");
+
+            printf("TESTEANDO pop...\n");
+            t = pop(&stack);
+            assert(!strcmp(t->simbolo, "+"));
+            liberar_expresion(t);
+
+            t = pop(&stack);
+            assert(t->valor == 3);
+            liberar_expresion(t);
+
+            t = pop(&stack);
+            assert(t->valor == 2);
+            liberar_expresion(t);
+
+            assert(!stack);
+            printf("FIN DEL TESTEO pop\n");
+        }
+        {
+            printf("TESTEANDO es_num...\n");
+            assert(es_num("123"));
+            assert(!es_num("1a3"));
+            assert(es_num("420"));
+            assert(!es_num("mod"));
+            printf("FIN DEL TESTEO es_num\n");
+        }
+        {
+            printf("TESTEANDO cargar_expresion...\n");
+            ETree t;
+            char *aux = strdup("1 2 +");
+            t = cargar_expresion(tabla, aux);
+            assert(!strcmp(t->simbolo, "+"));
+            assert(t->Izq->valor == 1);
+            assert(t->Der->valor == 2);
+            liberar_expresion(t);
+            free(aux);
+
+            aux = strdup("1 2 3 +");
+            t = cargar_expresion(tabla, aux);
+            assert(!t);
+            free(aux);
+
+            aux = strdup("1 $ +");
+            t = cargar_expresion(tabla, aux);
+            assert(!t);
+            free(aux);
+            printf("FIN DEL TESTEO cargar_expresion\n");
+        }
+                {
+            printf("TESTEANDO evaluar_expresion...\n");
+            ETree t;
+            char *aux = strdup("1 -- 3 *");
+            t = cargar_expresion(tabla, aux);
+            assert(evaluar_expresion(t) == (-3));
+            liberar_expresion(t);
+            free(aux);
+
+            aux = strdup("5 -- 13 + 2 * 7 +");
+            t = cargar_expresion(tabla, aux);
+            assert(evaluar_expresion(t) == 23);
+            liberar_expresion(t);
+            free(aux);
+
+            aux = strdup("1 $ +");
+            t = cargar_expresion(tabla, aux);
+            assert(evaluar_expresion(t) == 0);
+            free(aux);
+            printf("FIN DEL TESTEO evaluar_expresion\n");
         }
         liberar_tabla(tabla);
+        printf("FIN TEST FUNCIONES arbolExpresiones.c\n");
     }
     return 0;
 }
