@@ -57,7 +57,7 @@ void imprimir_alias(ATree aliases, char *pal) {
 
 }
 
-void Evaluar_alias(ATree aliases, char *pal) {
+void evaluar_alias(ATree aliases, char *pal) {
   ETree t = NULL;
   t = buscar_alias(aliases, pal);
   if (t) {

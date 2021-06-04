@@ -46,6 +46,6 @@ Definicion: Toma como parametro un Arbol de alias y una string y devuelve la eva
 asociada a dicha string.
 */
 
-void Evaluar_alias(ATree aliases,char *pal);
+void evaluar_alias(ATree aliases,char *pal);
 
 #endif // _ARBOL_ALIAS_H_

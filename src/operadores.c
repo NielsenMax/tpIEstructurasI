@@ -60,16 +60,3 @@ OCasilla buscar_simbolo(TablaOps tabla, char *simbolo) {
   return retorno;
 }
 
- /** main() {
-    TablaOps tabla = NULL;
-    cargar_operador(&tabla, "+", 2, suma);
-    cargar_operador(&tabla, "-", 2, resta);
-    cargar_operador(&tabla, "--", 1, opuesto);
-    cargar_operador(&tabla, "/", 2, division);
-    cargar_operador(&tabla, "%", 2, modulo);
-    cargar_operador(&tabla, "^", 2, potencia);
-    printf("%i", tabla->casilla.eval((int[2]) {3 ,4}));
-    printf("%i", buscar_simbolo(tabla, "+").eval((int[2]) {3 ,4}));
-    liberar_tabla(tabla);
-    return 0;
-    }**/

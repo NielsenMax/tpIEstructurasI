@@ -13,7 +13,7 @@ void push(Stack * stack, ETree dato) {
   nuevoNodo->dato = dato;
   nuevoNodo->sig = *stack;
   *stack = nuevoNodo;
-//  printf("PUSH");
+
 }
 
 ETree top(Stack stack) {
@@ -30,8 +30,7 @@ ETree pop(Stack * stack) {
 
     Stack siguiente = (*stack)->sig;
     retorno = (*stack)->dato;
-//    printf("POP:%i\n", retorno->valor);
-    //liberar_expresion((*stack)->dato);
+
     free(*stack);
     *stack = siguiente;
   }
@@ -39,7 +38,7 @@ ETree pop(Stack * stack) {
 }
 void liberar_expresion(ETree expresion) {
   if (expresion) {
-//    printf("Free en expresion\n");
+
       liberar_expresion(expresion->Izq);
       liberar_expresion(expresion->Der);
       free(expresion->simbolo);
@@ -49,13 +48,13 @@ void liberar_expresion(ETree expresion) {
 void liberar_stack(Stack stack) {
   while (stack != NULL) {
        Stack siguiente = NULL;
-    //if (stack->sig)
+
        siguiente = stack->sig;
-      // printf("le 47\n");
+
        liberar_expresion(stack->dato);
        free(stack);
        stack = siguiente;
-      //liberar_expresion(pop(&stack));
+   
   }
 }
 
@@ -79,25 +78,7 @@ ETree nuevo_ENodo(char *simbolo, OCasilla operador, int valor) {
 void imprimir_ETree(ETree tree) {
 
   if (tree != NULL) {
-      /**if (tree->Izq && tree->Der) {
-      printf("(");
 
-    }
-
-    Imprimir(tree->Izq);
-    if (tree->tipo == 1) {
-      printf("%s", tree->simbolo);
-
-    } else {
-      printf("%i", tree->valor);
-
-    }
-    Imprimir(tree->Der);
-    if (!tree->Der && !tree->Izq) {
-
-      printf(")");
-
-      }**/
       printf("(");
       imprimir_ETree(tree->Izq);
       if (tree->tipo == 1) {
@@ -132,7 +113,7 @@ ETree cargar_expresion(TablaOps tablaOps, char *expresion) {
     OCasilla casilla;
     Stack stack = NULL;
     ETree t = NULL;
-    //(string = strsep(&expresion, " "));
+
     while ((string = strsep(&expresion, " "))) {
        casilla = buscar_simbolo(tablaOps, string);
        if(casilla.aridad != -1) {

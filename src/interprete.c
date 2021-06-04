@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include "interprete.h"
 #include "alias.h"
 #include <ctype.h>
@@ -77,32 +78,6 @@ int opciones(char *input, int *fin) {
   return 3;
 }
 
-void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
-  int i, t = 0, espacio = 0;
-  char temp[strlen(input)];
-  for (i = fin; input[i]; i++) {
-    if (espacio) {
-      temp[t] = input[i];
-      t++;
-    } else {
-      if (input[i + 1] != ' ') {
-        espacio = 1;
-      }
-    }
-
-  }
-  temp[t] = '\0';
-  if (ioe == 1) {
-    imprimir_alias(T, temp);
-    printf("\n");
-  } else {
-    Evaluar_alias(T, temp);
-    printf("\n");
-  }
-
-
-}
-
 void normalizar_expresion(char *string) {
     // space is 1 when a space character is found and
     // 0 when any non-space character is found
@@ -158,70 +133,49 @@ void normalizar_expresion(char *string) {
     else
     string[k] = '\0';
 }
+void interpretar_IoE(char *input, int fin, ATree T, int ioe) {
+  
+  char *alias;
+  alias = input +fin;
+  normalizar_expresion(alias);
+  if (ioe == 1) {
+    imprimir_alias(T, alias);
+    printf("\n");
+  } else {
+    evaluar_alias(T, alias);
+    printf("\n");
+  }
+
+
+}
+
 
 
 ATree interpretar_alias(char *input, ATree T, TablaOps tabla, int fin) {
 
-  int i, ta = 0, te = 0, espacio = 0, valid = 1, flag = 0;
-  int len = strlen(input);
-  char tempa[len], tempe[len];
 
 
-  if (input[0] != ' ')
-    espacio = 1;
-  tempa[0] = '\0';
-  for (i = 0; input[i] != '=' && !isdigit(tempa[0]); i++) {
-    if (input[i] != ' ') {
-      espacio = 1;
-    }
-    if (espacio) {
-      tempa[ta] = input[i];
-      ta++;
-    }
+  char *alias; 
+
+  alias=strsep(&input,"=");
+  fin = fin - strlen(alias);
+  normalizar_expresion(alias);
+  input = input + fin;
+  normalizar_expresion(input);
+
+  ETree t = NULL;
+  liberar_expresion(t);
+  t= cargar_expresion(tabla, input);
+  if (t){        
+        T = insertar_alias(t, T, alias);
+        printf("Se cargo la expresion con exito\n");
   }
-  if (isdigit(tempa[0])) {
-    valid = 0;
-  }
-  if (tempa[ta - 1] == ' ') {
-    tempa[ta - 1] = '\0';
-  } else {
-    tempa[ta] = '\0';
-  }
-
-  for (i = fin; input[i] && valid; i++) {
-    if (!isalpha(input[i])) {
-      if (isdigit(input[i])) {
-        flag = 1;
-      }
-      tempe[te] = input[i];
-      te++;
-    } else {
-
-      valid = 0;
-    }
-
-
-  }
-
-  tempe[te] = '\0';
-  if (valid && flag) {
-      //printf("%s,%s", tempa, tempe);
-    ETree t = NULL;
-    liberar_expresion(t);
-    normalizar_expresion(tempe);
-   t= cargar_expresion(tabla, tempe);
-    if (t){
-
-        //   ATree temp = T;
-        T = insertar_alias(t, T, tempa);
-        //    liberar_alias(temp);
-        //free(temp);
-    }
-  } else {
-    printf("la expresion o el alias que se quiere cargar es invalida");
+  else {
+    printf("la expresion o el alias que se quiere cargar es invalida\n");
   }
 
   return T;
+
 
 
 }
@@ -234,22 +188,18 @@ void interpretar(ATree T, TablaOps tabla) {
     printf("\n");
     int a, *fin = &a;
     int menu = opciones(input, fin);
-    //printf("OPCION: %i\n", menu);
+
     if (menu) {
-      if (menu == 1) {
+      if (menu == 1 || menu == 2) {
 
         interpretar_IoE(input, a, T, menu);
 
-      } else if (menu == 2) {
-        interpretar_IoE(input, a, T, menu);
-      } else {
-        printf("el ingreso es invalido");
+      }else {
+        printf("el ingreso es invalido\n");
       }
 
     } else {
-//        ATree temp = T;
       T = interpretar_alias(input, T, tabla, a);
-      //    liberar_alias(temp);
 
     }
     free(input);
@@ -299,27 +249,15 @@ int main() {
   cargar_operador(&tabla, "/", 2, division);
   cargar_operador(&tabla, "%", 2, modulo);
   cargar_operador(&tabla, "^", 2, potencia);
-  // ETree t = NULL;
-  // liberar_expresion(t);
-  //cargar_expresion(&t, tabla, "    5   1 + -- 13  +   2*       7+    ");
-  ATree T = NULL;
-  //if (t) {
-  //  Imprimir(t);
-  //  printf("%i",evaluar_expresion(t));
-  //}
-  // T=insertar_alias(t,T,"ahola");
 
-  // printf("\n");
-  // Imprimir_alias(T,"ahola");
-  //printf("\n");
-  //Imprimir_alias(T,"hola");
+  ATree T = NULL;
+
   presentacion();
   interpretar(T, tabla);
 
 
   liberar_tabla(tabla);
 
-  //liberar_alias(T);
 
 
 }
