@@ -2,6 +2,7 @@
 #include "../src/operadores.h"
 #include "../src/arbolExpresiones.h"
 #include "../src/alias.h"
+#include "../src/interprete.h"
 #include <string.h>
 #include <assert.h>
 
@@ -222,6 +223,76 @@ int main() {
         }
         liberar_tabla(tabla);
         printf("FIN TEST FUNCIONES alias.c\n");
+    }
+    {
+    printf("TEST FUNCIONES interprete.c\n");
+        {
+            printf("TESTEANDO minusculas...\n");
+            char h1[] = "HoLa MuNdO";
+            minusculas(h1);
+            assert(!strcmp(h1, "hola mundo"));
+            char h2[] = "alejo";
+            minusculas(h2);
+            assert(!strcmp(h2, "alejo"));
+            char h3[] = "MAXI";
+            minusculas(h3);
+            assert(!strcmp(h3, "maxi"));
+            printf("FIN DEL TESTEO minusculas\n");
+        }
+        {
+            printf("TESTEANDO opciones...\n");
+            int fin;
+            assert(opciones("imprimir a", &fin) == 1);
+            assert(fin == 8);
+            assert(opciones("evaluar a", &fin) == 2);
+            assert(fin == 7);
+            assert(opciones("a = cargar 1 2 +", &fin) == 0);
+            assert(fin == 10);
+            assert(opciones("hola mundo", &fin) == 3);
+            printf("FIN DEL TESTEO opciones\n");
+        }
+        {
+            printf("TESTEANDO normalizar_expresion...\n");
+            char h1[] = "  hola   mundo   ";
+            normalizar_expresion(h1);
+            assert(!strcmp(h1,"hola mundo"));
+            char h2[] = "     1    2     +    ";
+            normalizar_expresion(h2);
+            assert(!strcmp(h2, "1 2 +"));
+            char h3[] = "1 2 3 +";
+            normalizar_expresion(h3);
+            assert(!strcmp(h3,"1 2 3 +"));
+            printf("FIN DEL TESTEO normalizar_expresion\n");
+        }
+        {
+            printf("TESTEANDO interpretar_alias...\n");
+            TablaOps tabla = NULL;
+        cargar_operador(&tabla, "+", 2, suma);
+        cargar_operador(&tabla, "-", 2, resta);
+        cargar_operador(&tabla, "--", 1, opuesto);
+        cargar_operador(&tabla, "*", 2, producto);
+        cargar_operador(&tabla, "/", 2, division);
+        cargar_operador(&tabla, "%", 2, modulo);
+        cargar_operador(&tabla, "^", 2, potencia);
+            char *aux;
+            ATree a = NULL;
+            aux = strdup("b = cargar 1 -- 3 *");
+            a = interpretar_alias(aux, a, tabla,10);
+            free(aux);
+            assert(!strcmp(a->alias, "b"));
+            aux = strdup("a = cargar 5 -- 13 + 2 * 7 +");
+            a = interpretar_alias(aux, a, tabla,10);
+            free(aux);
+            assert(!strcmp(a->Izq->alias, "a"));
+            aux = strdup("c = cargar 3 2 * 7 +");
+            a = interpretar_alias(aux, a, tabla,10);
+            free(aux);
+            assert(!strcmp(a->Der->alias, "c"));
+            liberar_alias(a);
+            liberar_tabla(tabla);
+            printf("FIN DEL TESTEO interpretar_alias\n");
+        }
+        printf("FIN TEST FUNCIONES interprete.c\n");
     }
     return 0;
 }

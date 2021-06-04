@@ -7,7 +7,7 @@ Definicion: Permite el ingreso de un array dinamicamente. El tamaño del buffer 
 char *leer();
 
 /*
-Definicon: Toma un string y un puntero a un int como parametros, el string representa la input que se realizo por teclado y 
+Definicon: Toma un string y un puntero a un int como parametros, el string representa la input que se realizo por teclado y
 el puntero a int almacena el valor donde terminan las palabras claves dentro de la input, para poder utilizarlo despues.
 Devuelve:
 -0 Si el comando ingresado hace referencia a un alias y una expresion para caragar
@@ -17,6 +17,9 @@ Devuelve:
 */
 int opciones(char *input,int *fin);
 
+void minusculas(char *palabra);
+
+void normalizar_expresion(char *string);
 /*
 Definicion: Toma un string, un puntero a int, un arbol de alias y un int. El string representa el input que se realizo,
 el primer int(fin) almacena el lugar en la string de la input donde finaliza la palabra clave del comando, y el segundo int(IoE)
