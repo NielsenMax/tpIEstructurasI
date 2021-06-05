@@ -1,7 +1,0 @@
-INFORME TRABAJO PRACTICO ESTRUCTURAS DE DATOS Y ALGORITMOS I:
-
-Dificultades:
-La mayor parte de las dificultades las econtramos a la hora de liberar memoria ya que siempre nos encontrabamos con situaciones
-donde liberabamos menos de lo que alocabamos o que liberabamos partes que ya se habian liberado antes. Para resolverlo utilizamos
-Valgrind durante mucho tiempo y debugueando,releyendo y reformulando nuestro codigo en reiteradas ocaciones hasta encontrar
-donde era que venian dichos errores.
